@@ -1,0 +1,33 @@
+{
+  "name": "callrail",
+  "version": "0.0.0",
+  "description": "Typed Node.js client for the CallRail API v3.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yannelli/callrail-sdk-typescript.git"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./webhooks": "./dist/webhooks.js",
+    "./testing": "./dist/testing.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.test.json && node --test .test-dist/test/*.test.js",
+    "docs:check": "tsc -p tsconfig.test.json && node .test-dist/scripts/check-docs.js && tsc -p tsconfig.docs.json"
+  },
+  "devDependencies": {
+    "@types/express": "^5",
+    "@types/node": "^20",
+    "typescript": "^5.5"
+  }
+}
