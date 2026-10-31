@@ -1,6 +1,6 @@
 # Repository artwork
 
-The README hero and GitHub social preview share a call-routing motif. Calls, texts, and webhooks connect to one typed client. Both images display the full repository name, `yannelli/callrail-sdk-typescript`.
+The README hero and GitHub social preview use a near-black canvas with white type. The headline and two lines of description sit at the top. One white rail runs the full width below them and rises into a call waveform on the right. A white button at the bottom names the GitHub repository, `github.com/yannelli/callrail-sdk-typescript`.
 
 ## Files
 
@@ -33,7 +33,7 @@ The export uses the `chromium` executable by default. Set `CHROMIUM` to the path
 CHROMIUM=/usr/bin/google-chrome npm run artwork -- --png
 ```
 
-The SVG files use Arial, Helvetica, or the system sans-serif fallback. Font metrics can differ between systems. Review the export after any design or font change.
+The SVG files prefer Instrument Sans and fall back to the system sans-serif font. Font metrics can differ between systems. Review the export after any design or font change.
 
 The renderer uses headless Chromium with its sandbox disabled. Run it only on these repository-generated SVG files. The command exits with an error if Chromium fails or produces the wrong image dimensions.
 

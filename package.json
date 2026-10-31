@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "prepare": "npm run build",
     "artwork": "tsc -p tsconfig.test.json && node .test-dist/scripts/generate-artwork.js",
     "typecheck": "tsc -p tsconfig.json",
     "test": "tsc -p tsconfig.test.json && node --test .test-dist/test/*.test.js",

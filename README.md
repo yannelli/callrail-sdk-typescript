@@ -20,10 +20,10 @@
 ## Install
 
 ```bash
-npm install callrail
+npm install github:yannelli/callrail-sdk-typescript
 ```
 
-The package needs Node.js 20 or later. It is published as ES modules. [Installation](docs/installation.md) tells you how to configure TypeScript and how to load the package from CommonJS.
+The package is not on the npm registry. npm clones the repository and builds it during install. The package needs Node.js 20 or later. It is published as ES modules. [Installation](docs/installation.md) tells you how to configure TypeScript and how to load the package from CommonJS.
 
 ## Quickstart
 
