@@ -5,7 +5,7 @@ A call is one inbound call to a tracking number, or one outbound call placed thr
 ## List calls
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.calls.list({
@@ -37,7 +37,7 @@ Every call has `id`, `answered`, `voicemail`, `direction`, `startTime`, `duratio
 ## Get one call
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const call = await account.calls.get(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -57,7 +57,7 @@ for (const phrase of call.conversationalTranscript ?? []) {
 `calls.create` connects your business to a customer. CallRail rings `businessPhoneNumber` first, and when someone answers, it dials `customerPhoneNumber` and joins the two. Outbound calls work for US and Canadian numbers only.
 
 ```ts
-import { OutboundCallerNumber, UserId } from "callrail";
+import { OutboundCallerNumber, UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const call = await account.calls.create({
@@ -83,7 +83,7 @@ Each outbound call draws from the outbound call budget of 100 per hour and 2,000
 ## Update a call
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const call = await account.calls.update(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -153,7 +153,7 @@ Each point's `date` is a day such as `2026-03-01`, or a full timestamp for hourl
 The `recording` field on a call is the address of an API endpoint, not audio. `calls.recording` asks that endpoint for a playable link.
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const recording = await account.calls.recording(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"));
@@ -168,7 +168,7 @@ On most accounts, the link is stable. On a HIPAA account, the link expires after
 For a call from a website visitor, `calls.pageViews` lists the pages of the visitor's session, in order. It is a paginated list. Pass `timeZone` when you want `createdAt` read in a zone other than the account default, such as `America/Los_Angeles`.
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 for await (const view of account.calls.pageViews(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"))) {

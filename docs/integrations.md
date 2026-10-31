@@ -10,7 +10,7 @@ Every other type, such as `GoogleAnalytics` or `Slack`, needs a login to the oth
 ## List integrations
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.integrations.list({ companyId: CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f") });
@@ -35,7 +35,7 @@ CallRail needs `companyId`, so the type needs it too. `state` is usually `active
 ## Get an integration and its signing key
 
 ```ts
-import { IntegrationId } from "callrail";
+import { IntegrationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const integration = await account.integrations.get(IntegrationId(4321), { fields: ["signingKey"] });
@@ -48,7 +48,7 @@ console.log(integration.type, integration.signingKey);
 ## Create an integration
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const webhooks = await account.integrations.create({
@@ -80,7 +80,7 @@ The response to `create` always carries `signingKey`. Store it with your webhook
 ## Update an integration
 
 ```ts
-import { IntegrationId } from "callrail";
+import { IntegrationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const integration = await account.integrations.update(IntegrationId(4321), {
@@ -99,7 +99,7 @@ console.log(integration.state);
 ## Disable an integration
 
 ```ts
-import { IntegrationId } from "callrail";
+import { IntegrationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.integrations.disable(IntegrationId(4321));

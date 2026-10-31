@@ -10,7 +10,7 @@ Both kinds use the same URLs, so the client has a different create method and up
 ## List trackers
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.trackers.list({
@@ -31,7 +31,7 @@ for (const tracker of page.items) {
 `trackers.get` accepts any tracker id and returns either kind. Check `tracker.type`, and TypeScript narrows the tracker, including its id. The id of a session tracker is a `SessionTrackerId`, which `trackers.updateSession` needs.
 
 ```ts
-import { TrackerId } from "callrail";
+import { TrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const tracker = await account.trackers.get(TrackerId("TRK8154748ae6bd4e278a7cddd38a662f4f"));
@@ -48,7 +48,7 @@ The tracker type is a closed union of `session` and `source`, so a `switch` on `
 ## Create a source tracker
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const tracker = await account.trackers.createSource({
@@ -86,7 +86,7 @@ If you set `areaCode` and CallRail has no number in that area code, it creates n
 ## Create a session tracker
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const tracker = await account.trackers.createSession({
@@ -115,7 +115,7 @@ A basic call flow rings one number. Pass `greeting` with `{ text }` to have Call
 An advanced call flow, such as a menu or a schedule, is built in the CallRail app. Attach one by the id that follows `call-flow/` in the app's address bar.
 
 ```ts
-import { SourceTrackerId } from "callrail";
+import { SourceTrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const tracker = await account.trackers.updateSource(SourceTrackerId("TRK8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -136,7 +136,7 @@ A basic flow reads back in the shape you wrote it. An advanced flow reads back a
 A tracker can receive texts when `smsEnabled` is `true`. `smsSupported` is `true` if the numbers of the tracker support text messages. With texting on, `messageFlow` either sends an automatic reply to each incoming text or runs a [message flow](message-flows.md).
 
 ```ts
-import { MessageFlowId, SessionTrackerId } from "callrail";
+import { MessageFlowId, SessionTrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const autoReply = await account.trackers.updateSession(SessionTrackerId("TRK8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -161,7 +161,7 @@ CallRail's request tables describe `message_flow` as an object, and its response
 Use `updateSession` for session trackers and `updateSource` for source trackers. Keys you leave out stay as they are.
 
 ```ts
-import { SourceTrackerId } from "callrail";
+import { SourceTrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const tracker = await account.trackers.updateSource(SourceTrackerId("TRK8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -183,7 +183,7 @@ In an update, CallRail only lets `poolSize` grow, so the pool never drops a numb
 `trackers.disable` is CallRail's `DELETE`. It takes any tracker id.
 
 ```ts
-import { TrackerId } from "callrail";
+import { TrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.trackers.disable(TrackerId("TRK8154748ae6bd4e278a7cddd38a662f4f"));

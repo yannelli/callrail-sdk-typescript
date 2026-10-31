@@ -5,7 +5,7 @@ A lead is a person who called, texted, chatted, or filled in a form. CallRail li
 ## List leads
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.leads.list({
@@ -35,7 +35,7 @@ The fields are `name`, `phone`, `email`, `createdAt`, `companyId`, and `companyN
 `leads.timeline` returns a summary of the lead and the first page of its events.
 
 ```ts
-import { PersonId } from "callrail";
+import { PersonId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const { lead, events } = await account.leads.timeline(PersonId("PER8154748ae6bd4e278a7cddd38a662f4f"));

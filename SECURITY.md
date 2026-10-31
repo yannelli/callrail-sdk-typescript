@@ -2,7 +2,7 @@
 
 ## Supported versions
 
-Security fixes go into the latest release of `callrail`. Upgrade to the latest release to get them.
+Security fixes go into the latest release of `@yannelli/callrail`. Upgrade to the latest release to get them.
 
 ## Report a vulnerability
 
@@ -20,7 +20,7 @@ The maintainer replies in the advisory. When a fix is available, the maintainer 
 Report problems in this package, such as these:
 
 - An API key that goes to a host other than the configured `baseUrl`, or into a URL or a log.
-- A webhook that `callrail/webhooks` accepts without a correct signature.
+- A webhook that `@yannelli/callrail/webhooks` accepts without a correct signature.
 - A decoded value that does not agree with the type that the client gives it.
 
 Report problems in the CallRail service or the CallRail app to CallRail. This package is not a CallRail product.

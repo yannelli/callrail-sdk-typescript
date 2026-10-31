@@ -8,7 +8,7 @@ Most apps work with one CallRail account. Create the client in one module and im
 
 ```ts
 // callrail.ts
-import { CallRail } from "callrail";
+import { CallRail } from "@yannelli/callrail";
 
 const apiKey = process.env.CALLRAIL_API_KEY;
 const accountId = process.env.CALLRAIL_ACCOUNT_ID;
@@ -58,7 +58,7 @@ The constructor throws a `TypeError` for these values:
 If you build a product that other CallRail customers connect to, set `requestFrom` to your product name in lowercase with underscores. Leave it out when you call the API for your own data.
 
 ```ts
-import { CallRail } from "callrail";
+import { CallRail } from "@yannelli/callrail";
 
 export function clientFor(customerApiKey: string): CallRail {
   return new CallRail({ apiKey: customerApiKey, requestFrom: "hanks_hotdogs" });
@@ -74,7 +74,7 @@ The client never retries a `POST`, a `PUT`, or a `DELETE`. A write that timed ou
 With the defaults, a `GET` that never gets an answer rejects after three tries of 30 seconds each, plus the waits between them. Use lower values for code that a person waits on. Use higher values for background jobs.
 
 ```ts
-import { CallRail } from "callrail";
+import { CallRail } from "@yannelli/callrail";
 
 const apiKey = process.env.CALLRAIL_API_KEY;
 if (!apiKey) throw new Error("Set CALLRAIL_API_KEY.");
@@ -88,7 +88,7 @@ export const background = new CallRail({ apiKey, timeoutMs: 60_000, maxRetries: 
 Every method that sends a request accepts an `AbortSignal` named `signal` in its last argument. For a list, a summary, or a time series, `signal` goes in the query. For a method that takes an id or an input first, it goes in a trailing options object.
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const signal = AbortSignal.timeout(10_000);
@@ -107,7 +107,7 @@ The two timeouts do different jobs. `timeoutMs` sets the limit for one try, and 
 CallRail can apply a write that you abort after the client sent it. Read the record again before you repeat the write.
 
 ```ts
-import { CallId } from "callrail";
+import { CallId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const controller = new AbortController();
@@ -126,7 +126,7 @@ try {
 The client sends every request through the global `fetch` unless you pass your own. Any function of type `FetchLike`, which is `(url: string, init: RequestInit) => Promise<Response>`, works. Use it to log requests or to send them through your own HTTP stack.
 
 ```ts
-import { CallRail, type FetchLike } from "callrail";
+import { CallRail, type FetchLike } from "@yannelli/callrail";
 
 const apiKey = process.env.CALLRAIL_API_KEY;
 if (!apiKey) throw new Error("Set CALLRAIL_API_KEY.");
@@ -145,4 +145,4 @@ The API key travels in the `Authorization` header and never in the URL, so the U
 
 The client uses a URL that CallRail returns, such as the next page of calls or text message media, only when its origin matches `baseUrl`. That check keeps your API key from reaching any other host.
 
-To test code that uses the client, pass the scripted `fakeFetch` from `callrail/testing`. [Testing](testing.md) shows how.
+To test code that uses the client, pass the scripted `fakeFetch` from `@yannelli/callrail/testing`. [Testing](testing.md) shows how.

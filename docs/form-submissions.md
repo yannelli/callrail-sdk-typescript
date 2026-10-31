@@ -5,7 +5,7 @@ A form submission is one web form that a visitor completed on a site with the Ca
 ## List form submissions
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.formSubmissions.list({
@@ -30,7 +30,7 @@ for (const submission of page.items) {
 Use `formSubmissions.create` for forms that the tracking script cannot capture, such as a form your server handles. CallRail reads phone numbers out of the values to find or create the lead.
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const submission = await account.formSubmissions.create({
@@ -48,7 +48,7 @@ console.log(submission.id, submission.personId);
 CallRail attributes the submission from one of two sources. Pass `sessionId`, the visitor's session id from the tracking script, or pass all three of `referrer`, `referringUrl`, and `landingPageUrl`. You can pass both. The type rejects a submission with neither.
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 export async function forward(sessionId: string, fields: Record<string, string>): Promise<void> {
@@ -66,7 +66,7 @@ export async function forward(sessionId: string, fields: Record<string, string>)
 ## Update a form submission
 
 ```ts
-import { FormSubmissionId } from "callrail";
+import { FormSubmissionId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const submission = await account.formSubmissions.update(FormSubmissionId("FOR8154748ae6bd4e278a7cddd38a662f4f"), {

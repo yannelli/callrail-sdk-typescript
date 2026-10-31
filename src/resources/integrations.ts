@@ -80,7 +80,7 @@ export interface OtherIntegration {
 export type IntegrationRecord = WebhooksIntegration | CustomIntegration | OtherIntegration;
 
 export interface IntegrationExtras {
-  /** The company signing key that verifies webhook signatures. See `callrail/webhooks`. */
+  /** The company signing key that verifies webhook signatures. See `@yannelli/callrail/webhooks`. */
   readonly signingKey: string | null;
 }
 

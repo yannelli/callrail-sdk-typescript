@@ -19,7 +19,7 @@ for (const company of page.items) {
 ## Get one company
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const company = await account.companies.get(CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f"));
@@ -46,7 +46,7 @@ Without `timeZone`, the company uses the account's time zone. CallRail's example
 ## Update a company
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const company = await account.companies.update(CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -80,7 +80,7 @@ console.log(`${updatedRecords} companies updated`);
 `companies.disable` is CallRail's `DELETE`. It deactivates the company, disables its tracking numbers, and turns off its tracking script. The record stays, with `status` set to `disabled`.
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.companies.disable(CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f"));
