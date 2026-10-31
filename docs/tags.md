@@ -21,7 +21,7 @@ for (const tag of page.items) {
 }
 ```
 
-`companyId` returns the tags that belong to one company, and `tagLevel: "account"` returns the account-level tags. CallRail rejects the two together, and so does the type. `status` is `enabled` or `disabled`, and `sort` accepts `name`. `companyId` on an account-level tag is `null`.
+`companyId` returns the tags of one company. `tagLevel: "account"` returns the account-level tags, and `tagLevel: "company"` returns the company-level tags. CallRail rejects `tagLevel: "account"` together with `companyId`, and so does the type. `status` is `enabled` or `disabled`. `sort` accepts `name`. `companyId` on an account-level tag is `null`.
 
 ## Create a tag
 
@@ -56,7 +56,7 @@ console.log(disabled.name, disabled.status);
 
 A new name replaces the old one everywhere the tag is applied. `disabled: true` stops anyone from applying the tag to new calls, forms, or texts, and leaves it on the ones that already have it. `disabled: false` makes the tag available again. The tag's `status` reads `enabled` or `disabled`.
 
-CallRail's field table types `disabled` as a string, but the description in the same row says the value is `true` or `false`. The client follows the description and sends a JSON boolean.
+CallRail's field table types `disabled` as a string, but the description in the same row says the value is `true` or `false`. The client obeys the description and sends a JSON boolean.
 
 ## Delete a tag
 
@@ -67,7 +67,7 @@ import { account } from "./callrail.js";
 await account.tags.delete(TagId(993186));
 ```
 
-Deleting a tag removes it from every call flow and from every interaction it was on. Disable the tag instead when you want to keep it on past interactions.
+When you delete a tag, CallRail removes it from each call flow and from each interaction that had it. Disable the tag instead when you want to keep it on past interactions.
 
 ## Apply tags to a call, form, or thread
 
@@ -82,7 +82,7 @@ await account.formSubmissions.update(FormSubmissionId("FOR8154748ae6bd4e278a7cdd
 await account.smsThreads.update(SmsThreadId("KkMhr"), { tags: { replace: [] } });
 ```
 
-- `{ add: [...] }` keeps the existing tags and adds these names. The list cannot be empty, because adding nothing would change nothing.
+- `{ add: [...] }` keeps the existing tags and adds these names. The list cannot be empty, because an empty list changes nothing.
 - `{ replace: [...] }` sets the exact list and removes every other tag. `{ replace: [] }` removes them all.
 
 On calls and form submissions, a name that matches no tag in the company creates a new tag.

@@ -15,9 +15,9 @@ for (const notification of page.items) {
 }
 ```
 
-`userId` lists one user's notifications, and `email` lists the notifications of a recipient who has only an email address. The type accepts one or the other. `channel` keeps the notifications that use `email`, `push`, or `desktop`. CallRail's docs list `user_id` and `email` under a request body, but a `GET` sends no body, so the client puts them on the query string like every other filter.
+`userId` lists one user's notifications, and `email` lists the notifications of a recipient who has only an email address. The type accepts one or the other. `channel` keeps the notifications that use `email`, `push`, or `desktop`. CallRail's docs list `user_id` and `email` under a request body. A `GET` sends no body, so the client puts them in the query string, as it does for the other filters.
 
-CallRail spreads a notification's settings across several flags. The client folds `call_enabled` and `alert_type` into `callAlerts`, and folds `send_email`, `send_push`, and `send_desktop` into the `channels` list. `smsAlerts` says whether texts alert. `companyId` and `trackerId` are `null` when the notification covers the whole account.
+CallRail spreads a notification's settings across several flags. The client folds `call_enabled` and `alert_type` into `callAlerts`, and folds `send_email`, `send_push`, and `send_desktop` into the `channels` list. `smsAlerts` is `true` if texts cause alerts. `companyId` and `trackerId` are `null` when the notification covers the whole account.
 
 ## Create a notification
 
@@ -73,7 +73,7 @@ console.log(notification.callAlerts, notification.channels);
 
 Keys you leave out stay as they are. `callAlerts: null` turns call alerts off, and the client sends `call_enabled: false`. CallRail keeps the old `alert_type` on a notification with call alerts off, and the client ignores it, so `callAlerts` reads `null`.
 
-`channels` replaces the whole set. The client sends all three flags every time, `true` for the channels you list and `false` for the rest, so sending the same update twice leaves the notification in the same state.
+`channels` replaces the whole set. The client always sends all three flags. It sends `true` for the channels that you list and `false` for the other channels. Thus the same update sent two times gives the same result.
 
 The recipient cannot change. To alert someone else, delete the notification and create a new one. CallRail's update table accepts `company_id` and `tracker_id`, but its description says to re-create a notification to change its scope. The client sends `scope` when you pass it, so check `companyId` and `trackerId` in the result. The update table also leaves out `agent_id`, which the client still sends when you pass `agentId`.
 

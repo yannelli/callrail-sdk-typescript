@@ -22,13 +22,13 @@ for (const conversation of page.items) {
 }
 ```
 
-Each conversation in the list carries `recentMessages`, which holds up to two of its latest messages. `search` matches one term against the customer's phone number and name, and `fields` can add `leadStatus` and `source`.
+Each conversation in the list carries `recentMessages`, which holds up to two of its latest messages. `search` matches one term against the phone number and the name of the customer. `fields` can add `leadStatus` and `source`.
 
 ## Read a conversation's lead status
 
 CallRail documents the lead status of a text conversation in two places, and the two tables disagree. The REST table lists only `previously_marked_good_lead` and `null`. The webhook tables for received and sent texts list four values, `good_lead`, `not_a_lead`, `previously_marked_good_lead`, and `null`.
 
-The client types `leadStatus` as `LeadStatus | null`, the same type calls use. It covers all four documented values and still decodes a status that neither table lists, so your code works whichever table matches the live API. Handle every documented value.
+The client gives `leadStatus` the type `LeadStatus | null`, which is the same type that calls use. This type covers all four documented values. It also decodes a status that neither table lists, so your code works with the live API if either table is correct. Handle each documented value.
 
 ```ts
 import type { LeadStatus } from "callrail";
@@ -69,7 +69,7 @@ for await (const message of messages) {
 }
 ```
 
-`messages` is a page, and `for await` walks every page of them. `type` is `sms` or `mms`. CallRail's examples use both cases, and the client lowercases the value. `user` names the person who sent an outbound message, and is `null` for inbound messages.
+`messages` is a page, and `for await` walks every page of them. `type` is `sms` or `mms`. CallRail's examples use both cases, and the client lowercases the value. `user` names the person who sent an outbound message. An inbound message can also have a `user`, so read `direction` to find the direction of a message.
 
 ## Send a text
 
@@ -89,7 +89,7 @@ console.log(conversation.id, conversation.recentMessages.length);
 
 `customerPhoneNumber` is a 10-digit US or Canadian number. `trackingNumber` is the tracking number the text comes from. You can leave it out only when a conversation with this customer already exists.
 
-CallRail requires `content` of 140 characters or fewer. The client does not check the length. The first time you text a customer, CallRail adds opt-out instructions if your message has none. Identify your business in the message, and include an opt-out keyword such as STOP yourself.
+CallRail accepts a maximum of 140 characters in `content`. The client does not check the length. The first time you text a customer, CallRail adds opt-out instructions if your message has none. Identify your business in the message. Also include an opt-out keyword, such as STOP.
 
 Each send draws from the text budget of 150 per hour and 1,000 per day. The client never retries a send, because a retry after a lost response would text the customer twice.
 

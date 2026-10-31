@@ -59,7 +59,7 @@ while (page !== null) {
 
 ## Page through large call exports
 
-CallRail recommends relative pagination for large sets of calls, and supports it only on `calls.list`. Pass `pagination: "relative"`. Each page then follows the `next_page` link that CallRail returns, and carries `hasNextPage` instead of page totals.
+CallRail recommends relative pagination for large sets of calls, and supports it only on `calls.list`. Pass `pagination: "relative"`. Each page then comes from the `next_page` link that CallRail returns, and carries `hasNextPage` instead of page totals.
 
 ```ts
 import { account } from "./callrail.js";
@@ -83,7 +83,7 @@ const tenth = await account.calls.list({ pagination: "relative", offset: 9, perP
 console.log(tenth.kind, tenth.items.length, tenth.hasNextPage);
 ```
 
-A call that arrives between two requests can shift the window, so one page may overlap the next or skip a call. If an export must be exact, deduplicate by `call.id`, and filter with `startDate` and `endDate` that end in the past.
+A call that arrives between two requests can move the window. Then one page can overlap the next page, or the export can skip a call. If an export must be exact, remove duplicates by `call.id`. Also filter with a `startDate` and an `endDate` in the past.
 
 ## Read a record and its first page
 

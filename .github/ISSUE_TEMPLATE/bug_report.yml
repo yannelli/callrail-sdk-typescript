@@ -1,0 +1,50 @@
+name: Bug report
+description: Report a method that sends the wrong request, decodes the wrong result, or throws the wrong error.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: Remove API keys, account ids, phone numbers, and customer names before you submit the issue.
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      placeholder: 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      placeholder: 22.11.0
+    validations:
+      required: true
+  - type: input
+    id: method
+    attributes:
+      label: Method
+      description: The client method that has the problem.
+      placeholder: account.calls.list
+    validations:
+      required: true
+  - type: textarea
+    id: code
+    attributes:
+      label: Code
+      description: The smallest code that shows the problem.
+      render: ts
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected result
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual result
+      description: The value, the error message, and `error.problem` if the client threw a `CallRailError`.
+    validations:
+      required: true

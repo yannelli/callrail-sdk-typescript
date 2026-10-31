@@ -107,10 +107,20 @@ test("brokenLinks reports a missing page or heading and skips URLs, inline code,
   ];
 
   assert.deepEqual(brokenLinks(pages), [
-    "README.md:7 links to docs/gone.md, but docs/gone.md is not a page in docs/ or the README.",
+    "README.md:7 links to docs/gone.md, but docs/gone.md is not a checked page or a file in the repository.",
     "README.md:8 links to docs/calls.md#get-a-call, but docs/calls.md has no heading with that anchor.",
     "README.md:9 links to #install-it, but README.md has no heading with that anchor.",
-    "docs/calls.md:5 links to tags.md#apply-tags, but docs/tags.md is not a page in docs/ or the README.",
+    "docs/calls.md:5 links to tags.md#apply-tags, but docs/tags.md is not a checked page or a file in the repository.",
+  ]);
+});
+
+test("brokenLinks accepts a link to a repository file without an anchor", () => {
+  const pages: Page[] = [
+    { path: "CONTRIBUTING.md", markdown: ["# Contributing", "", "Read the [License](LICENSE) and the [section](LICENSE#terms)."].join("\n") },
+  ];
+
+  assert.deepEqual(brokenLinks(pages, new Set(["LICENSE"])), [
+    "CONTRIBUTING.md:3 links to LICENSE#terms, but LICENSE is not a checked page, so it has no headings.",
   ]);
 });
 

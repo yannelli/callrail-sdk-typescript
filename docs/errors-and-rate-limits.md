@@ -1,6 +1,6 @@
 # Errors and rate limits
 
-Every failure you can handle rejects with a `CallRailError`. Its `problem` property is a discriminated union, so you `switch` on `problem.kind` and TypeScript tells you when a case is missing.
+Each failed request rejects with a `CallRailError`. A canceled request rejects with the reason of its `AbortSignal`, as [Configuration](configuration.md#cancel-a-request) explains. Its `problem` property is a discriminated union, so you `switch` on `problem.kind` and TypeScript tells you when a case is missing.
 
 ## Handle a failed request
 
@@ -25,7 +25,7 @@ try {
 }
 ```
 
-`error.message` holds CallRail's own explanation when the response had one, and the status line otherwise.
+`error.message` holds the explanation from CallRail if the response has one. If the body has no error field that the client knows, the message is the body, cut to 500 characters. If the body is empty, the message is the status line. For `network`, `timeout`, and `unexpected_response`, the client writes the message.
 
 ## Know the problem kinds
 
@@ -36,10 +36,12 @@ try {
 | `not_found` | A 404. | `status` |
 | `invalid_request` | A 400, 422, or any other 4xx that is not listed here. | `status`, `fieldErrors` |
 | `rate_limited` | A 429. | `status`, `bucket`, `retryAfterMs` |
-| `server_error` | A 5xx, after the retries for a `GET`. | `status` |
-| `network` | No response arrived. | `cause` |
+| `server_error` | A 5xx. For a `GET`, a 500, 502, 503, or 504 comes after the retries. | `status` |
+| `network` | No response arrived, or the client could not read the response body. | `cause` |
 | `timeout` | An attempt ran past `timeoutMs`, after the retries for a `GET`. | `timeoutMs` |
-| `unexpected_response` | A 2xx that the client could not read. | `status`, `reason`, `path` |
+| `unexpected_response` | A 2xx that the client could not read, or a URL from CallRail on an origin other than `baseUrl`. | `status`, `reason`, `path` |
+
+`reason` is `decode`, `not_json`, or `foreign_url`. For `foreign_url`, the client sends no request and `status` is `0`.
 
 ## Handle every kind
 
@@ -104,7 +106,7 @@ try {
 
 ## Log a failure
 
-`error.request` holds the method and URL of the request that failed. The URL never contains the API key, which travels in a header. `error.responseText` holds the raw response body, or `null` when no response arrived.
+`error.request` holds the method and URL of the request that failed. The URL never contains the API key, which travels in a header. `error.responseText` holds the raw response body, or `null` when the client has no body.
 
 ```ts
 import { CallRailError } from "callrail";
@@ -131,7 +133,7 @@ CallRail counts each account's requests over an hour and over a day. Every proce
 
 `textMessages.send` draws from the text budget and `calls.create` draws from the outbound call budget. Every other method draws from the general budget. CallRail support can raise the limits for an account.
 
-The client has no rate limiter of its own. A counter in one process cannot see what other processes spent, so the 429 response from CallRail is the only reliable signal. The client never retries a 429, because the windows last an hour or a day. Handle `rate_limited` by deferring the work.
+The client has no rate limiter of its own. A counter in one process cannot see what other processes spent, so the 429 response from CallRail is the only reliable signal. The client never retries a 429, because the windows last an hour or a day. If you get `rate_limited`, do the work later.
 
 ```ts
 import { CallRailError, CompanyId } from "callrail";
@@ -152,7 +154,7 @@ export async function sendReminder(customerPhoneNumber: string): Promise<"sent" 
 }
 ```
 
-`retryAfterMs` is `null` unless the response had a `Retry-After` header. CallRail does not document that header, so plan for `null`.
+`retryAfterMs` is `null` unless the response has a `Retry-After` header that gives the delay in seconds. A header with an HTTP date also gives `null`. CallRail does not document that header, so plan for `null`.
 
 ## Know what the client retries
 
@@ -160,12 +162,19 @@ The client retries a `GET` after a network error, a timeout, or a 500, 502, 503,
 
 ## Check before you repeat a write
 
-A `network` or `timeout` problem on a write is ambiguous. The request may have reached CallRail before the connection failed. Before you send a text message or place a call again, check whether the first one went out, for example by listing the recent messages of that conversation.
+A `network` or `timeout` problem on a write does not tell you if CallRail got the request. The request can reach CallRail before the connection fails. Before you send a text message or place a call again, find out if the first one went out. For example, list the recent messages of that conversation.
 
 An `unexpected_response` problem after a write means CallRail accepted the change and the client could not read the answer. Do not send the write again. Read the record to see its current state. For a response that did not decode, `problem.path` names the JSON path of the value that did not match, such as `$.company_id`.
 
 ## Fix programmer errors
 
-Some mistakes are not visible to the type checker, so the client throws a `TypeError` before it sends anything. Examples include an invalid constructor option, an id constructor given an empty string, a message flow in which two steps share an id, and a session tracker pool size outside 4 to 50. Fix the calling code instead of catching these.
+The type checker cannot find some mistakes. For these mistakes, the client throws a `TypeError` before it sends a request:
+
+- An incorrect constructor option.
+- An empty string given to an id constructor.
+- A message flow in which two steps have the same id.
+- A `poolSize` in `trackers.createSession` that is not a whole number from 4 to 50.
+
+Correct the code that calls the client. Do not catch these errors.
 
 Webhook handlers get a different error type, `WebhookError`, which [Webhooks](webhooks.md) covers.

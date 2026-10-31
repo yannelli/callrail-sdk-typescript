@@ -79,8 +79,8 @@ export interface RequestOptions {
   /**
    * Cancels the request, its retries, and, on a list, every later page. The
    * method rejects with `signal.reason`, which is an `AbortError` unless you
-   * passed your own reason. A write that is cancelled after it was sent may
-   * still take effect on CallRail's side.
+   * passed your own reason. CallRail can still apply a write that you cancel
+   * after the client sent it.
    */
   readonly signal?: AbortSignal;
 }

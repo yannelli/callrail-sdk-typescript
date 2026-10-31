@@ -2,13 +2,13 @@
 
 The `callrail` package is a typed Node.js client for the CallRail API v3. It has no runtime dependencies.
 
-## Check the requirements
+## Before you install
 
-You need the following:
+You need these items:
 
 - Node.js 20 or later. The client uses the global `fetch`, `FormData`, `Blob`, and `AbortSignal` that Node.js 20 provides.
 - An ES module project. The package is published as ES modules only. From a CommonJS file, load it with `await import("callrail")`.
-- TypeScript 5.0 or later, if you write TypeScript. The type declarations ship inside the package.
+- TypeScript 5.0 or later, if you write TypeScript. The type declarations ship inside the package. The examples read `process.env`, so also install `@types/node`.
 
 ## Install the package
 
@@ -18,7 +18,7 @@ npm install callrail
 
 ## Configure TypeScript
 
-The package's three entry points are `callrail`, `callrail/webhooks`, and `callrail/testing`. They are declared in the `exports` field of its `package.json`, and TypeScript reads that field only under the `NodeNext` and `bundler` module resolution modes. Use `NodeNext` for code that Node.js runs directly.
+The package's three entry points are `callrail`, `callrail/webhooks`, and `callrail/testing`. They are declared in the `exports` field of its `package.json`. TypeScript reads that field only under the `Node16`, `NodeNext`, and `bundler` module resolution modes. Use `NodeNext` for code that Node.js runs directly.
 
 ```json
 {
@@ -45,13 +45,11 @@ const apiKey = process.env.CALLRAIL_API_KEY;
 if (!apiKey) throw new Error("Set CALLRAIL_API_KEY to an API key from your CallRail settings.");
 
 const callrail = new CallRail({ apiKey });
-const accounts = await callrail.accounts.list();
-
-for (const account of accounts.items) {
+for await (const account of callrail.accounts.list()) {
   console.log(account.id, account.name);
 }
 ```
 
-Compile it with `tsc` and run the output with `node`. The program prints the id and name of every account the key can see, one per line.
+Compile it with `tsc` and run the output with `node`. The program prints the id and the name of each account that the key can see, one account on each line.
 
 Next, read [Configuration](configuration.md) to set up the client module that the rest of these docs import.
