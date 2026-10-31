@@ -11,7 +11,12 @@ for (const kind of ["hero", "social"] as const) {
     const { width, height } = dimensions[kind];
     assert.equal(svg, artworkSvg(kind));
     assert.ok(svg.includes(`viewBox="0 0 ${width} ${height}"`));
-    assert.ok(svg.includes(`<text x="64" y="${height - 34}" font-size="${kind === "social" ? 30 : 42}">${repository}</text>`));
+    assert.ok(svg.includes(`>github.com/${repository}</text>`));
+    assert.equal((svg.match(/data-signal=/g) ?? []).length, 1);
+    assert.match(svg, /single white rail that becomes a call waveform/);
+    assert.match(svg, /<path data-signal="true" d="M 72 340\.0 L 74 /);
+    assert.doesNotMatch(svg, /npm i|monospace|<linearGradient|<radialGradient|<filter/);
+    assert.doesNotMatch(svg, /keypad|#ecebe7|#38450f|#c4d496|switchboard/);
     assert.match(svg, /<title id="title">CallRail SDK for TypeScript and Node.js<\/title>/);
     assert.match(svg, /aria-labelledby="title description"/);
     assert.doesNotMatch(svg, /<script|<foreignObject|<image|href=|url\(/);

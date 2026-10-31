@@ -12,9 +12,13 @@ You need these items:
 
 ## Install the package
 
+The package is not on the npm registry. Install it from GitHub. npm clones the repository and runs its build during install, so Git must be on your `PATH`.
+
 ```bash
-npm install callrail
+npm install github:yannelli/callrail-sdk-typescript
 ```
+
+To pin a version, add a tag or commit after `#`, for example `github:yannelli/callrail-sdk-typescript#v0.1.0`.
 
 ## Configure TypeScript
 
