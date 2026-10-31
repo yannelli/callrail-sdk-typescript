@@ -46,7 +46,7 @@ console.log(`${longCalls} calls in the last 30 days lasted ten minutes or more.`
 `next()` requests the following page with the same query. After the last page it resolves `null` and sends nothing.
 
 ```ts
-import type { OffsetPage, Tag } from "callrail";
+import type { OffsetPage, Tag } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 let page: OffsetPage<Tag> | null = await account.tags.list({ perPage: 25 });
@@ -96,7 +96,7 @@ Three methods return a record together with the first page of its children:
 The child page is an ordinary page. `next()` requests the record again with the next page number, and `for await` walks every child.
 
 ```ts
-import { SmsThreadId } from "callrail";
+import { SmsThreadId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const { thread, messages } = await account.smsThreads.get(SmsThreadId("KkMhr"));

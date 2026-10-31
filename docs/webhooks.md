@@ -1,6 +1,6 @@
 # Webhooks
 
-CallRail can send an event to your server in a POST request. It sends the 10 kinds of events in [Know the events](#know-the-events). `callrail/webhooks` checks that each request came from CallRail and turns its body into a typed event. It never sends a request itself. [Integrations](integrations.md#create-an-integration) shows how to register your URLs.
+CallRail can send an event to your server in a POST request. It sends the 10 kinds of events in [Know the events](#know-the-events). `@yannelli/callrail/webhooks` checks that each request came from CallRail and turns its body into a typed event. It never sends a request itself. [Integrations](integrations.md#create-an-integration) shows how to register your URLs.
 
 ## Know the events
 
@@ -26,8 +26,8 @@ A webhook body does not say which event it is, and the call events share one sha
 ```ts
 // server.ts
 import express from "express";
-import type { CallId } from "callrail";
-import { readWebhook, WebhookError, type WebhookCall } from "callrail/webhooks";
+import type { CallId } from "@yannelli/callrail";
+import { readWebhook, WebhookError, type WebhookCall } from "@yannelli/callrail/webhooks";
 
 const signingKey = process.env.CALLRAIL_SIGNING_KEY;
 if (!signingKey) {
@@ -74,7 +74,7 @@ CallRail never sends a webhook again, whatever your response is. After many fail
 ```ts
 // router.ts
 import express from "express";
-import { isWebhookKind, readWebhook, WebhookError } from "callrail/webhooks";
+import { isWebhookKind, readWebhook, WebhookError } from "@yannelli/callrail/webhooks";
 
 const signingKey = process.env.CALLRAIL_SIGNING_KEY;
 if (!signingKey) {
@@ -126,7 +126,7 @@ Frameworks that hand you a Fetch `Request`, such as Next.js route handlers, give
 
 ```ts
 // app/webhooks/callrail/sms_received/route.ts
-import { readWebhook, WebhookError } from "callrail/webhooks";
+import { readWebhook, WebhookError } from "@yannelli/callrail/webhooks";
 
 export async function POST(request: Request): Promise<Response> {
   try {
@@ -152,7 +152,7 @@ Do not call `request.json()` or `request.text()` first. Both read the body, and 
 Another person can capture a webhook and send it to you again, and its signature still matches. For five kinds, `readWebhook` can refuse an event whose `timestamp` is too old.
 
 ```ts
-import { readWebhook, type WebhookRequest } from "callrail/webhooks";
+import { readWebhook, type WebhookRequest } from "@yannelli/callrail/webhooks";
 
 export function screenPop(request: WebhookRequest) {
   const { call } = readWebhook("pre_call", request, { maxAgeMs: 5 * 60 * 1000 });
@@ -169,7 +169,7 @@ The type refuses `maxAgeMs` for the other kinds. In CallRail's published example
 Each company has its own signing key. Copy it from the Webhooks integration page in the CallRail app, or read it through the API.
 
 ```ts
-import { IntegrationId } from "callrail";
+import { IntegrationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const integration = await account.integrations.get(IntegrationId(4321), { fields: ["signingKey"] });
@@ -187,7 +187,7 @@ A server that receives webhooks for many companies must find the correct key bef
 `verifyWebhook` checks the signature and throws the same errors as `readWebhook`. It does not decode the body. Use it when you send the raw request to a queue and decode it later.
 
 ```ts
-import { verifyWebhook, WebhookError } from "callrail/webhooks";
+import { verifyWebhook, WebhookError } from "@yannelli/callrail/webhooks";
 
 export const queue: { body: Uint8Array; signature: string | null }[] = [];
 

@@ -9,4 +9,4 @@ Describe the change and the problem that it solves.
 - [ ] `npm run build` passes.
 - [ ] `npm run docs:check` passes.
 - [ ] Tests cover the new or changed behavior.
-- [ ] The docs and `CHANGELOG.md` show changes that users can see.
+- [ ] The title follows Conventional Commits, and the docs show changes that users can see.

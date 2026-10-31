@@ -1,5 +1,5 @@
 /**
- * `callrail/webhooks` receives the POSTs CallRail sends. It never sends a request.
+ * `@yannelli/callrail/webhooks` receives the POSTs CallRail sends. It never sends a request.
  *
  * `readWebhook(kind, request)` is the one call a handler makes. It checks the
  * `Signature` header against the raw body (HMAC-SHA1 keyed with the company

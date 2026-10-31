@@ -5,7 +5,7 @@ When you place an outbound call through CallRail, the customer sees one of your 
 ## List caller ids
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.callerIds.list({ companyId: CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f") });
@@ -20,7 +20,7 @@ CallRail needs `companyId`, so the type needs it too. CallRail documents `phoneN
 ## Verify a number
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const callerId = await account.callerIds.create({
@@ -37,7 +37,7 @@ A new caller id starts the verification. After `create` succeeds, CallRail calls
 ## Read the verification status
 
 ```ts
-import { CallerIdId } from "callrail";
+import { CallerIdId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const callerId = await account.callerIds.get(CallerIdId(15));
@@ -54,7 +54,7 @@ Read the caller id again after the verification call to see if it succeeded.
 ## Delete a caller id
 
 ```ts
-import { CallerIdId } from "callrail";
+import { CallerIdId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.callerIds.delete(CallerIdId(15));

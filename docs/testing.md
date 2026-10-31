@@ -1,6 +1,6 @@
 # Testing
 
-`callrail/testing` exports `fakeFetch`, a scripted `fetch` for your tests. Pass it to the client as the `fetch` option. It answers requests with the replies you scripted, in order, and records every request as plain data. Your test then asserts the exact request your code sent and what your code did with the answer, with no network and no API key.
+`@yannelli/callrail/testing` exports `fakeFetch`, a scripted `fetch` for your tests. Pass it to the client as the `fetch` option. It answers requests with the replies you scripted, in order, and records every request as plain data. Your test then asserts the exact request your code sent and what your code did with the answer, with no network and no API key.
 
 ## Test code that calls CallRail
 
@@ -10,8 +10,8 @@ This test covers `ensureTag`, which returns a company's tag by name and creates 
 // tags.test.ts
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CallRail, CompanyId, type AccountClient, type Tag } from "callrail";
-import { fakeFetch } from "callrail/testing";
+import { CallRail, CompanyId, type AccountClient, type Tag } from "@yannelli/callrail";
+import { fakeFetch } from "@yannelli/callrail/testing";
 
 async function ensureTag(account: AccountClient, companyId: CompanyId, name: string): Promise<Tag> {
   for await (const tag of account.tags.list({ companyId })) {
@@ -93,8 +93,8 @@ Script the error response, and assert what your code does with it.
 // notify.test.ts
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { CallRail, CallRailError, CompanyId, type AccountClient } from "callrail";
-import { fakeFetch } from "callrail/testing";
+import { CallRail, CallRailError, CompanyId, type AccountClient } from "@yannelli/callrail";
+import { fakeFetch } from "@yannelli/callrail/testing";
 
 async function notifyCustomer(account: AccountClient, customerPhoneNumber: string): Promise<"sent" | "retry_later"> {
   try {
@@ -130,7 +130,7 @@ The client retries a `GET` after a network error, a timeout, or a 500, 502, 503,
 // sms-webhook.test.ts
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { readWebhook, signWebhook, WebhookError } from "callrail/webhooks";
+import { readWebhook, signWebhook, WebhookError } from "@yannelli/callrail/webhooks";
 
 const signingKey = "072e77e426f92738a72fe23c4d1953b4";
 

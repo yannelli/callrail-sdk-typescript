@@ -1,8 +1,8 @@
 # Changelog
 
-This file records each change that users can see. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the versions follow [Semantic Versioning](https://semver.org/).
+This file records the first release. The versions follow [Semantic Versioning](https://semver.org/). The notes for each later release are on [GitHub Releases](https://github.com/yannelli/callrail-sdk-typescript/releases). The release workflow makes them from the Conventional Commit messages.
 
-## Unreleased
+## 0.1.0
 
 ### Added
 
@@ -11,5 +11,5 @@ This file records each change that users can see. The format follows [Keep a Cha
 - `CallRailError` with a typed `problem` union for each failure kind.
 - Offset and relative pagination with `for await` and `next()`.
 - Retries for `GET` requests after network errors, timeouts, and 500, 502, 503, and 504 responses. Writes never retry.
-- `callrail/webhooks`, which checks the CallRail signature before it decodes a webhook.
-- `callrail/testing`, with a scripted `fakeFetch` that records each request.
+- `@yannelli/callrail/webhooks`, which checks the CallRail signature before it decodes a webhook.
+- `@yannelli/callrail/testing`, with a scripted `fakeFetch` that records each request.

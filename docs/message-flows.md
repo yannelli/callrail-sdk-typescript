@@ -7,7 +7,7 @@ CallRail runs a flow only on a local number in the United States or Canada that 
 ## List message flows
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.messageFlows.list({ companyId: CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f") });
@@ -22,7 +22,7 @@ for (const flow of page.items) {
 ## Get a message flow
 
 ```ts
-import { MessageFlowId } from "callrail";
+import { MessageFlowId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const flow = await account.messageFlows.get(MessageFlowId("MFL1e9075f25b1949928b0db7323d775064"));
@@ -58,7 +58,7 @@ CallRail stores steps as a map keyed by step id, next to the id of the start ste
 This flow replies outside business hours and tags every conversation.
 
 ```ts
-import { CompanyId, TagId } from "callrail";
+import { CompanyId, TagId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const flow = await account.messageFlows.create({
@@ -121,7 +121,7 @@ A schedule window is a `day` plus a `startTime` and an `endTime` in 24-hour `HHM
 `name` renames the flow. `steps` replaces every step, so send the whole list. You can put a step from `get` back into `steps`, but not an `other` step. This package cannot write a step type that it does not know. TypeScript rejects an `other` step in `steps`, so your code must decide what to do with one. This example throws.
 
 ```ts
-import { MessageFlowId, type MessageFlowStep, type MessageFlowStepInput, type NonEmpty } from "callrail";
+import { MessageFlowId, type MessageFlowStep, type MessageFlowStepInput, type NonEmpty } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 function withNewReply(step: MessageFlowStep): MessageFlowStepInput {
@@ -151,7 +151,7 @@ CallRail's update example sends `POST`, while its endpoint table says `PUT`. The
 CallRail refuses to delete a flow that a tracker still uses. Detach it from each tracker in `trackerIds` first. `messageFlow: null` removes the flow and leaves texting on.
 
 ```ts
-import { MessageFlowId } from "callrail";
+import { MessageFlowId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const id = MessageFlowId("MFL3e7a12c9f84e43e79a6a1b55c1c3405b");
