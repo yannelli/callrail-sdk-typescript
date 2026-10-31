@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { test } from "node:test";
 import {
   anchorOf,
   brokenLinks,
+  repositoryFiles,
   chapterFor,
   extractExamples,
   styleViolations,
@@ -112,6 +116,23 @@ test("brokenLinks reports a missing page or heading and skips URLs, inline code,
     "README.md:9 links to #install-it, but README.md has no heading with that anchor.",
     "docs/calls.md:5 links to tags.md#apply-tags, but docs/tags.md is not a checked page or a file in the repository.",
   ]);
+});
+
+test("repositoryFiles includes nested assets and omits dependencies and build output", () => {
+  const root = mkdtempSync(join(tmpdir(), "callrail-docs-test-"));
+  try {
+    for (const directory of ["assets", "node_modules", ".git", "dist", ".test-dist", ".docs-check"]) {
+      mkdirSync(join(root, directory));
+      writeFileSync(join(root, directory, "example.svg"), "<svg/>");
+    }
+    writeFileSync(join(root, "LICENSE"), "MIT");
+    const files = repositoryFiles(root);
+    assert.deepEqual([...files].sort(), ["LICENSE", "assets/example.svg"]);
+    assert.deepEqual(brokenLinks([{ path: "README.md", markdown: "![Hero](assets/example.svg)" }], files), []);
+    assert.equal(brokenLinks([{ path: "README.md", markdown: "![Missing](assets/missing.svg)" }], files).length, 1);
+  } finally {
+    rmSync(root, { recursive: true, force: true });
+  }
 });
 
 test("brokenLinks accepts a link to a repository file without an anchor", () => {

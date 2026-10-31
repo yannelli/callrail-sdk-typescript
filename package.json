@@ -21,7 +21,7 @@
     "url": "https://github.com/yannelli/callrail-sdk-typescript/issues"
   },
   "license": "MIT",
-  "author": "Ryan Yannelli",
+  "author": "Ryan Yannelli (https://ryanyannelli.com)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yannelli/callrail-sdk-typescript.git"
@@ -41,6 +41,7 @@
   ],
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
+    "artwork": "tsc -p tsconfig.test.json && node .test-dist/scripts/generate-artwork.js",
     "typecheck": "tsc -p tsconfig.json",
     "test": "tsc -p tsconfig.test.json && node --test .test-dist/test/*.test.js",
     "docs:check": "tsc -p tsconfig.test.json && node .test-dist/scripts/check-docs.js && tsc -p tsconfig.docs.json"

@@ -58,7 +58,7 @@ The tests do not send requests to CallRail. Each test gives the client the scrip
 1. Add or change the method in the resource file in `src/resources/`.
 2. Add a row to `test/operations.ts` with the method name, the HTTP method, and the path.
 3. Change the operation count in `test/catalog.test.ts`.
-4. Add tests to the resource test file. Make a check of the request that the client sends and the result that it decodes.
+4. Add tests to the resource test file. Check the request that the client sends and the result that it decodes.
 5. Add an example that calls the method to the chapter of the resource in `docs/`.
 6. Run the four checks.
 

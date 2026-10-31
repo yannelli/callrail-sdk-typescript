@@ -54,7 +54,7 @@ app.use(express.json());
 app.listen(3000);
 ```
 
-`readWebhook` checks the `Signature` header against the body before it reads anything, then decodes the body as the kind you named. It needs the body exactly as it arrived, as bytes. `express.raw()` gives you a `Buffer`, which is a `Uint8Array`. Register webhook routes before `express.json()`. After `express.json()` parses a body, `readWebhook` cannot make a check of its signature. The type accepts only a `Uint8Array`. If you change the bytes to a string or to JSON and back, the result can differ from the bytes that CallRail signed.
+`readWebhook` checks the `Signature` header against the body before it reads anything, then decodes the body as the kind you named. It needs the body exactly as it arrived, as bytes. `express.raw()` gives you a `Buffer`, which is a `Uint8Array`. Register webhook routes before `express.json()`. After `express.json()` parses a body, `readWebhook` cannot check its signature. The type accepts only a `Uint8Array`. If you change the bytes to a string or to JSON and back, the result can differ from the bytes that CallRail signed.
 
 ## Respond to a rejected webhook
 
@@ -65,11 +65,11 @@ app.listen(3000);
 - `malformed_body` means CallRail signed the request, but the body does not match the documented shape of the kind you named. `error.path` points at the value that did not match. If the body is not UTF-8 text or not JSON, `error.path` is `null`. If you set `maxAgeMs` and the `timestamp` is not a date, the reason is also `malformed_body`, with the path `$.timestamp`. Keep the raw body so you can process it later, and respond with a 2xx.
 - `stale` means the event is older than the `maxAgeMs` you allowed. Skip it and respond with a 2xx.
 
-CallRail never sends a webhook again, whatever your response is. After many failed deliveries, CallRail can turn off the integration. Thus, respond with a 2xx to each request that CallRail signed, also when your code cannot use it.
+CallRail never sends a webhook again, whatever your response is. After many failed deliveries, CallRail can turn off the integration. Respond with a 2xx to each request that CallRail signed, even when your code cannot use it.
 
 ## Route every kind through one handler
 
-`isWebhookKind` checks a route parameter, so one route can receive each kind. A check of `event.event` narrows the payload type.
+`isWebhookKind` checks a route parameter, so one route can receive each kind. Checking `event.event` narrows the payload type.
 
 ```ts
 // router.ts
@@ -180,7 +180,7 @@ if (integration.signingKey === null) {
 console.log(integration.signingKey);
 ```
 
-A server that receives webhooks for many companies must find the correct key before it can make a check of a signature. Put the company in the URL, such as `/webhooks/callrail/COM8154748ae6bd4e278a7cddd38a662f4f/post_call`, and look up that company's key.
+A server that receives webhooks for many companies must find the correct key before it can check a signature. Put the company in the URL, such as `/webhooks/callrail/COM8154748ae6bd4e278a7cddd38a662f4f/post_call`, and look up that company's key.
 
 ## Check the signature only
 
