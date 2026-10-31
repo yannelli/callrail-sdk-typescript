@@ -71,7 +71,7 @@ if (email.scope.type === "Company") {
 console.log(email.frequency, email.leadStatus);
 ```
 
-`scope` names the company or the account that the email covers. A check of `scope.type` narrows `scope.id` to a `CompanyId` or an `AccountId`. `recipient` is `{ type: "user", userId, name, email }` or `{ type: "email", email }`. CallRail's single-record tables type `frequency` as a string while its examples send an array, so the client always gives you an array.
+`scope` names the company or the account that the email covers. Checking `scope.type` narrows `scope.id` to a `CompanyId` or an `AccountId`. `recipient` is `{ type: "user", userId, name, email }` or `{ type: "email", email }`. CallRail's single-record tables type `frequency` as a string while its examples send an array, so the client always gives you an array.
 
 ## Update a summary email
 

@@ -1,19 +1,21 @@
 # CallRail SDK for TypeScript and Node.js
 
+![CallRail SDK for TypeScript and Node.js by yannelli/callrail-sdk-typescript](assets/readme-hero.svg)
+
 [![CI](https://github.com/yannelli/callrail-sdk-typescript/actions/workflows/ci.yml/badge.svg)](https://github.com/yannelli/callrail-sdk-typescript/actions/workflows/ci.yml)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-339933.svg)](https://nodejs.org/)
 
-`callrail` is a typed TypeScript client for the [CallRail API v3](https://apidocs.callrail.com/). Use it to read and change calls, text messages, form submissions, leads, companies, tracking numbers, and the other resources of a CallRail account. It also receives CallRail webhooks and makes a check of their signatures. The package has no runtime dependencies.
+`callrail` is a TypeScript SDK for the [CallRail API v3](https://apidocs.callrail.com/). Use it to read and change calls, text messages, form submissions, leads, companies, tracking numbers, and other account resources. It also checks and decodes CallRail webhooks. The package has no runtime dependencies.
 
 ## Features
 
-- **Typed ids.** Each id has its own type, so the compiler rejects a company id where a call id belongs.
-- **Typed errors.** A failed request throws a `CallRailError`. Its `problem` property is a union that you can `switch` on.
-- **Automatic pagination.** Loop over a list with `for await`, and the client gets each page when you need it.
-- **Safe retries.** The client retries a `GET` after a network error, a timeout, or a 500, 502, 503, or 504 response. It never retries a write, so it never sends a text message twice.
-- **Webhook signatures.** `callrail/webhooks` makes a check of the CallRail signature before it gives you a typed event.
-- **Test helpers.** `callrail/testing` gives your tests a scripted `fetch` that records each request.
+- Each id has its own type. The compiler rejects a company id where a call id belongs.
+- A failed request throws a `CallRailError`. Its `problem` property is a typed union that you can `switch` on.
+- Lists support automatic pagination. Loop with `for await`, and the client gets each page when you need it.
+- The client retries a `GET` after a network error, a timeout, or a 500, 502, 503, or 504 response. Writes never retry, which prevents duplicate text sends from retries.
+- `callrail/webhooks` checks webhook signatures before it returns a typed event.
+- `callrail/testing` gives your tests a scripted `fetch` that records each request.
 
 ## Install
 
@@ -91,7 +93,7 @@ No. This is an independent open source package. CallRail did not make it and doe
 
 ### Which version of the CallRail API does it use?
 
-It uses the CallRail API v3. It has a method for each of 71 HTTP operations, across the 16 resources in the [documentation](#documentation). Tests make a check of the HTTP method and the path of each operation.
+It uses the CallRail API v3. It has a method for each of 71 HTTP operations, across the 16 resources in the [documentation](#documentation). Tests check the HTTP method and path of each operation.
 
 ### Which runtimes does it support?
 
@@ -113,9 +115,9 @@ It retries a `GET` after a network error, a timeout, or a 500, 502, 503, or 504 
 
 The client has no rate limiter. When CallRail sends a 429 response, the client throws a `CallRailError` whose `problem.kind` is `rate_limited`. `problem.bucket` names the limit, which is `general`, `sms_send`, or `outbound_call`. [Errors and rate limits](docs/errors-and-rate-limits.md#stay-within-the-rate-limits) gives the limits.
 
-### How do I verify a CallRail webhook signature? <!-- concise-ignore -->
+### How do I verify a CallRail webhook signature?
 
-Use `readWebhook` from `callrail/webhooks`. It makes a check of the `Signature` header against the raw request body with your company signing key. Then it decodes the body. If the check fails, it throws a `WebhookError`. [Webhooks](docs/webhooks.md#receive-a-webhook) has a full Express example.
+Use `readWebhook` from `callrail/webhooks`. It checks the `Signature` header against the raw request body with your company signing key. Then it decodes the body. If the check fails, it throws a `WebhookError`. [Webhooks](docs/webhooks.md#receive-a-webhook) has a full Express example.
 
 ### How do I test code that uses the client?
 
@@ -124,6 +126,12 @@ Give the client the `fakeFetch` function from `callrail/testing`. It sends the r
 ## Contributing
 
 Bug reports, feature requests, and pull requests are welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md) to set up the project and run the checks. To report a security vulnerability, read [SECURITY.md](SECURITY.md).
+
+[Repository artwork](docs/artwork.md) covers image generation and the GitHub social preview upload.
+
+## Author
+
+Created by [Ryan Yannelli](https://ryanyannelli.com), a Senior Engineer.
 
 ## License
 

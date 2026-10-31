@@ -11,5 +11,5 @@ This file records each change that users can see. The format follows [Keep a Cha
 - `CallRailError` with a typed `problem` union for each failure kind.
 - Offset and relative pagination with `for await` and `next()`.
 - Retries for `GET` requests after network errors, timeouts, and 500, 502, 503, and 504 responses. Writes never retry.
-- `callrail/webhooks`, which makes a check of the CallRail signature before it decodes a webhook.
+- `callrail/webhooks`, which checks the CallRail signature before it decodes a webhook.
 - `callrail/testing`, with a scripted `fakeFetch` that records each request.

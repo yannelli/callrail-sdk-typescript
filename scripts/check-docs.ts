@@ -104,6 +104,20 @@ export function styleViolations(page: Page): readonly string[] {
   });
 }
 
+export function repositoryFiles(root: string): ReadonlySet<string> {
+  const files = new Set<string>();
+  const excluded = new Set([".git", "node_modules", "dist", ".test-dist", ".docs-check"]);
+  function collect(directory: string): void {
+    for (const entry of readdirSync(join(root, directory), { withFileTypes: true })) {
+      const path = posix.join(directory, entry.name);
+      if (entry.isFile()) files.add(path);
+      else if (entry.isDirectory() && !excluded.has(entry.name)) collect(path);
+    }
+  }
+  collect("");
+  return files;
+}
+
 export function main(): void {
   const root = process.cwd();
   const topLevel = readdirSync(root, { withFileTypes: true }).filter((entry) => entry.isFile());
@@ -139,7 +153,7 @@ export function main(): void {
     failures.push(`${name} has no example in ${chapter}. Call it as .${name}( in a ts block there.`);
   }
   const pages = sources.map(({ path, markdown }) => ({ path: path.split("\\").join("/"), markdown }));
-  const files = new Set(topLevel.map((entry) => entry.name).filter((name) => !name.endsWith(".md")));
+  const files = repositoryFiles(root);
   failures.push(...brokenLinks(pages, files), ...pages.flatMap(styleViolations));
 
   const out = join(root, ".docs-check");
