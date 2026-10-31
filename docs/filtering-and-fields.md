@@ -1,6 +1,6 @@
 # Filtering and fields
 
-List methods share one vocabulary for dates, sorting, and search. Several resources also let you choose which optional fields come back, and the result type follows your choice. This chapter covers the shared parts. Each resource chapter lists the filters that resource accepts.
+List methods share one vocabulary for dates, sorting, and search. Some resources also let you select the optional fields in the response, and the result type agrees with your selection. This chapter covers the shared parts. Each resource chapter lists the filters that resource accepts.
 
 ## Filter by date
 
@@ -53,7 +53,7 @@ console.log(`${page.totalRecords} calls match`);
 
 ## Filter by tag
 
-The lists of calls and form submissions accept `tags`, a list of tag names, and so do `calls.summary`, `calls.timeseries`, and `formSubmissions.summary`. A record matches when it carries any of the names.
+The lists of calls and form submissions accept `tags`, a list of tag names, and so do `calls.summary`, `calls.timeseries`, and `formSubmissions.summary`. A record matches if it has one or more of the names.
 
 ```ts
 import { account } from "./callrail.js";
@@ -77,7 +77,7 @@ for (const call of page.items) {
 }
 ```
 
-A requested field has the type `T | null`, because CallRail sends `null` for data a record does not have. A field you did not request is missing from the object and from its type. In the loop above, reading `call.note` is a compile error, because the query did not ask for `note`.
+A requested field has the type `T | null`, because CallRail sends `null` for data a record does not have. A field you did not request is missing from the object and from its type. In the loop above, `call.note` gives a compile error, because the query did not ask for `note`.
 
 These methods accept `fields`:
 

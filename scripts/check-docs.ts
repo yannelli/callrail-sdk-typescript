@@ -62,7 +62,7 @@ function unfencedLines(markdown: string): readonly { readonly line: number; read
   });
 }
 
-export function brokenLinks(pages: readonly Page[]): readonly string[] {
+export function brokenLinks(pages: readonly Page[], files: ReadonlySet<string> = new Set()): readonly string[] {
   const anchors = new Map(
     pages.map((page) => [
       page.path,
@@ -76,7 +76,10 @@ export function brokenLinks(pages: readonly Page[]): readonly string[] {
         const [file = "", anchor] = target.split("#");
         const resolved = file === "" ? page.path : posix.normalize(posix.join(posix.dirname(page.path), file));
         const headings = anchors.get(resolved);
-        if (headings === undefined) return [`${page.path}:${line} links to ${target}, but ${resolved} is not a page in docs/ or the README.`];
+        if (headings === undefined && files.has(resolved)) {
+          return anchor === undefined ? [] : [`${page.path}:${line} links to ${target}, but ${resolved} is not a checked page, so it has no headings.`];
+        }
+        if (headings === undefined) return [`${page.path}:${line} links to ${target}, but ${resolved} is not a checked page or a file in the repository.`];
         if (anchor !== undefined && !headings.has(anchor)) return [`${page.path}:${line} links to ${target}, but ${resolved} has no heading with that anchor.`];
         return [];
       }),
@@ -103,11 +106,17 @@ export function styleViolations(page: Page): readonly string[] {
 
 export function main(): void {
   const root = process.cwd();
+  const topLevel = readdirSync(root, { withFileTypes: true }).filter((entry) => entry.isFile());
+  const pagesAtRoot = topLevel
+    .map((entry) => entry.name)
+    .filter((name) => name.endsWith(".md") && name !== "README.md")
+    .sort()
+    .map((name) => ({ chapter: name.slice(0, -".md".length).toLowerCase(), path: name }));
   const chapters = readdirSync(join(root, "docs"))
     .filter((name) => name.endsWith(".md"))
     .sort()
     .map((name) => ({ chapter: name.slice(0, -".md".length), path: join("docs", name) }));
-  const sources = [{ chapter: "readme", path: "README.md" }, ...chapters].map((source) => ({
+  const sources = [{ chapter: "readme", path: "README.md" }, ...pagesAtRoot, ...chapters].map((source) => ({
     ...source,
     markdown: readFileSync(join(root, source.path), "utf8").replaceAll("\r\n", "\n"),
   }));
@@ -130,7 +139,8 @@ export function main(): void {
     failures.push(`${name} has no example in ${chapter}. Call it as .${name}( in a ts block there.`);
   }
   const pages = sources.map(({ path, markdown }) => ({ path: path.split("\\").join("/"), markdown }));
-  failures.push(...brokenLinks(pages), ...pages.flatMap(styleViolations));
+  const files = new Set(topLevel.map((entry) => entry.name).filter((name) => !name.endsWith(".md")));
+  failures.push(...brokenLinks(pages, files), ...pages.flatMap(styleViolations));
 
   const out = join(root, ".docs-check");
   rmSync(out, { recursive: true, force: true });

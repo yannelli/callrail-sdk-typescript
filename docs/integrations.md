@@ -2,7 +2,7 @@
 
 An integration connects a company to another service. Through the API you can create and change two types of integration.
 
-- `Webhooks` posts CallRail events to your URLs. [Webhooks](webhooks.md) covers receiving them.
+- `Webhooks` posts CallRail events to your URLs. [Webhooks](webhooks.md) tells you how to receive them.
 - `Custom` captures cookies from website visitors and attaches their values to calls.
 
 Every other type, such as `GoogleAnalytics` or `Slack`, needs a login to the other service, so you set it up in the CallRail app. Those integrations arrive here read-only as `{ type: "other", wireType, config }`. A company has at most one integration of each type.
@@ -30,7 +30,7 @@ for (const integration of page.items) {
 }
 ```
 
-CallRail requires `companyId`, so the type does too. `state` is usually `active` or `disabled`. CallRail's tables also list `pending` and `failed`, so `state` is an open string.
+CallRail needs `companyId`, so the type needs it too. `state` is usually `active` or `disabled`. CallRail's tables also list `pending` and `failed`, so `state` is an open string.
 
 ## Get an integration and its signing key
 
@@ -71,7 +71,7 @@ const cookies = await account.integrations.create({
 console.log(cookies.id, cookies.state);
 ```
 
-`webhooks` maps each event to a list of URLs. The keys are the same event names that `readWebhook` takes, so the URL you register for `post_call` is the route whose handler reads a `post_call` webhook. CallRail documents no config key for `convert_assist_complete`, so the type leaves it out, and you register that URL in the CallRail app.
+`webhooks` maps each event to a list of URLs. The keys are the same event names that `readWebhook` takes. Thus the URL that you register for `post_call` is the route whose handler reads a `post_call` webhook. CallRail documents no config key for `convert_assist_complete`, so the type leaves it out, and you register that URL in the CallRail app.
 
 The response to `create` always carries `signingKey`. Store it with your webhook settings.
 
@@ -94,7 +94,7 @@ const integration = await account.integrations.update(IntegrationId(4321), {
 console.log(integration.state);
 ```
 
-`state` turns the integration on or off. The client sends `webhooks` or `grabCookies` as the integration's whole `config`, so include every event you want to keep. CallRail does not document whether it merges a partial config. An integration has only one of the two, and the type accepts one or the other.
+`state` turns the integration on or off. The client sends `webhooks` or `grabCookies` as the integration's whole `config`, so include every event you want to keep. CallRail does not document what it does with a partial config. An integration has only one of the two, and the type accepts one or the other.
 
 ## Disable an integration
 
@@ -105,4 +105,4 @@ import { account } from "./callrail.js";
 await account.integrations.disable(IntegrationId(4321));
 ```
 
-`disable` is CallRail's `DELETE` for integrations. CallRail describes it as disabling the integration.
+`disable` is CallRail's `DELETE` for integrations. CallRail says that it disables the integration.

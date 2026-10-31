@@ -1,6 +1,6 @@
 # Calls
 
-A call is one inbound call to a tracking number, or one outbound call placed through CallRail. The record carries the caller, the tracking number, the duration, the recording, and, when you ask for them, attribution fields such as the marketing source and the keywords.
+A call is one inbound call to a tracking number, or one outbound call placed through CallRail. The record has the caller, the tracking number, the duration, and the recording. If you ask for them, it also has attribution fields, such as the marketing source and the keywords.
 
 ## List calls
 
@@ -72,7 +72,7 @@ const call = await account.calls.create({
 console.log(call.id, call.answered, call.duration);
 ```
 
-`callerId` is the number the customer sees. It must be a tracking number in the account or a verified outbound caller id, written as its 10 digits with `OutboundCallerNumber`. A `CallerIdId` does not fit there, because that id names the verification record and not the digits the customer sees. CallRail's field table types `caller_id` as a 10-digit integer while one of its examples sends a string, so the client follows the table and sends an integer. [Outbound caller ids](caller-ids.md) shows how to verify a number.
+`callerId` is the number the customer sees. It must be a tracking number in the account or an outbound caller id with `verified: true`. Write it as its 10 digits with `OutboundCallerNumber`. A `CallerIdId` does not fit there, because that id names the verification record and not the digits the customer sees. CallRail's field table gives `caller_id` as a 10-digit integer, but one of its examples sends a string. The client obeys the table and sends an integer. [Outbound caller ids](caller-ids.md) shows how to add a number.
 
 The call is still ringing when `create` resolves, so `answered` and `voicemail` are `false`, and `duration` is `null`. Read the call again later, or receive the `post_outbound_call` webhook, to learn how it went.
 
@@ -125,7 +125,7 @@ for (const group of summary.groups) {
 
 The metrics are `totalCalls`, `answeredCalls`, `missedCalls`, `firstTimeCallers`, `averageDuration`, `formattedAverageDuration`, and `leads`. `totalCalls` is always included, and `fields` adds the others. `groups` is empty and `groupedBy` is `null` when the query has no `groupBy`.
 
-Across the whole account, you can also group by `company`. That grouping cannot combine with `companyId`, and the type rejects the pair. The summary also accepts `device`, `minDuration`, `maxDuration` in seconds, `tags`, `trackerIds`, `direction`, `answerStatus`, `firstTimeCallers`, `leadStatus`, `agentId`, and `search`.
+Across the whole account, you can also group by `company` or `company_id`. These groupings cannot go with `companyId`, and the type rejects the pair. The summary also accepts `device`, `minDuration`, `maxDuration` in seconds, `tags`, `trackerIds`, `direction`, `answerStatus`, `firstTimeCallers`, `leadStatus`, `agentId`, and `search`.
 
 ## Chart calls over time
 
@@ -161,7 +161,7 @@ const recording = await account.calls.recording(CallId("CAL8154748ae6bd4e278a7cd
 console.log(recording.url);
 ```
 
-On most accounts, the link is stable. On HIPAA accounts, it is a temporary link that expires after about 24 hours, so request a new one each time instead of storing it.
+On most accounts, the link is stable. On a HIPAA account, the link expires after about 24 hours. Request a new link each time, and do not store it.
 
 ## List the pages a caller viewed
 

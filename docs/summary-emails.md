@@ -49,7 +49,7 @@ console.log(forBob.scope, forAccounting.scope);
 ```
 
 - A user recipient without `companyId` gets one email that covers every company they can see. Add `companyId` to cover one company.
-- An email-only recipient must name a company, so the type requires `companyId` for one.
+- An email-only recipient must name a company, so the type needs `companyId` for this recipient.
 - `frequency` lists one or more of `daily`, `weekly`, and `monthly`.
 - `sections` picks the parts of the report. The keys are `summaryStatistics`, `topSources`, `topKeywords`, and `callLog`, and you pass at least one.
 - `leadStatus` filters the report by lead status. It takes CallRail's labels as written, which are `Lead`, `Not a Lead`, `Not Scored`, and `All`.
@@ -71,7 +71,7 @@ if (email.scope.type === "Company") {
 console.log(email.frequency, email.leadStatus);
 ```
 
-`scope` names the company or the account the email covers, and checking `scope.type` narrows `scope.id` to a `CompanyId` or an `AccountId`. `recipient` is `{ type: "user", userId, name, email }` or `{ type: "email", email }`. CallRail's single-record tables type `frequency` as a string while its examples send an array, so the client always gives you an array.
+`scope` names the company or the account that the email covers. A check of `scope.type` narrows `scope.id` to a `CompanyId` or an `AccountId`. `recipient` is `{ type: "user", userId, name, email }` or `{ type: "email", email }`. CallRail's single-record tables type `frequency` as a string while its examples send an array, so the client always gives you an array.
 
 ## Update a summary email
 
@@ -87,7 +87,7 @@ const email = await account.summaryEmails.update(SummaryEmailId("CSS8154748ae6bd
 console.log(email.frequency);
 ```
 
-CallRail requires `sections` on every update, so the type does too. `frequency` replaces the subscribed set, so `["weekly"]` stops the daily and monthly emails. Leave it out to keep the current frequencies. The recipient and the scope cannot change. To move a subscription, delete it and create a new one.
+CallRail needs `sections` in each update, so the type needs it too. `frequency` replaces the subscribed set, so `["weekly"]` stops the daily and monthly emails. Leave it out to keep the current frequencies. `leadStatus` changes the lead status filter of the report. The recipient and the scope cannot change. To move a subscription, delete it and create a new one.
 
 ## Delete a summary email
 
@@ -98,4 +98,4 @@ import { account } from "./callrail.js";
 await account.summaryEmails.delete(SummaryEmailId("CSS8154748ae6bd4e278a7cddd38a662f4f"));
 ```
 
-Deleting a subscription stops future emails. CallRail answers with a `forbidden` problem when the user who owns the API key cannot access the subscription.
+When you delete a subscription, CallRail sends no more emails for it. CallRail answers with a `forbidden` problem when the user who owns the API key cannot access the subscription.

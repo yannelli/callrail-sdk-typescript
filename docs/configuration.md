@@ -39,12 +39,19 @@ The constructor takes one object.
 | --- | --- | --- |
 | `apiKey` | Required | An API key from your CallRail settings. |
 | `requestFrom` | Not sent | Your product name, sent as the `Request-From` header. |
-| `timeoutMs` | `30000` | How long one attempt waits for a response. |
-| `maxRetries` | `2` | How many extra attempts a failed `GET` gets. |
+| `timeoutMs` | `30000` | How long one try waits for the full response, with its body. |
+| `maxRetries` | `2` | How many times the client retries a failed `GET`. |
 | `baseUrl` | `https://api.callrail.com` | The origin that receives every request. |
 | `fetch` | The global `fetch` | The function that sends every request. |
 
-The constructor throws a `TypeError` for an empty `apiKey` and for a `requestFrom` that has characters other than lowercase letters, digits, and underscores. It also throws for a `baseUrl` that is not an `https:` origin without a path, a `timeoutMs` that is not a positive number, and a `maxRetries` that is negative or fractional.
+The constructor throws a `TypeError` for these values:
+
+- An `apiKey` that is empty or has only spaces.
+- A `requestFrom` with characters other than lowercase letters, digits, and underscores.
+- A `baseUrl` that is not an `https:` origin without a path, a query, or a hash.
+- A `timeoutMs` that is not a positive finite number.
+- A `maxRetries` that is not a whole number of 0 or more.
+- No `fetch` option when the runtime has no global `fetch`.
 
 ## Identify your product
 
@@ -60,11 +67,11 @@ export function clientFor(customerApiKey: string): CallRail {
 
 ## Set timeouts and retries
 
-`timeoutMs` limits each attempt, not the whole method call. When a `GET` fails with a network error, a timeout, or a 500, 502, 503, or 504 response, the client tries again, up to `maxRetries` more times. Before each retry it waits a random time between zero and a ceiling. The ceiling starts at half a second, doubles with each retry, and stops at eight seconds.
+`timeoutMs` sets the limit for each try, not for the whole method call. If a `GET` fails with a network error, a timeout, or a 500, 502, 503, or 504 response, the client tries again. It tries a maximum of `maxRetries` more times. Before each retry it waits a random time between zero and a ceiling. The ceiling starts at half a second, doubles with each retry, and stops at eight seconds.
 
-The client never retries a `POST`, a `PUT`, or a `DELETE`. A write that timed out may already have sent the text message or placed the call. It never retries a 429 response either, as [Errors and rate limits](errors-and-rate-limits.md) explains.
+The client never retries a `POST`, a `PUT`, or a `DELETE`. A write that timed out can already have sent the text message or placed the call. It never retries a 429 response either, as [Errors and rate limits](errors-and-rate-limits.md) explains.
 
-With the defaults, a `GET` that never gets an answer rejects after three attempts of 30 seconds each, plus the waits between them. Tighten both options for code that a person is waiting on, and loosen them for background jobs.
+With the defaults, a `GET` that never gets an answer rejects after three tries of 30 seconds each, plus the waits between them. Use lower values for code that a person waits on. Use higher values for background jobs.
 
 ```ts
 import { CallRail } from "callrail";
@@ -78,7 +85,7 @@ export const background = new CallRail({ apiKey, timeoutMs: 60_000, maxRetries: 
 
 ## Cancel a request
 
-Every method that sends a request accepts an `AbortSignal` named `signal` in its last argument. For a list, `signal` goes in the query. For a method that takes an id or an input first, it goes in a trailing options object.
+Every method that sends a request accepts an `AbortSignal` named `signal` in its last argument. For a list, a summary, or a time series, `signal` goes in the query. For a method that takes an id or an input first, it goes in a trailing options object.
 
 ```ts
 import { CallId } from "callrail";
@@ -93,11 +100,11 @@ await account.calls.update(call.id, { note: "Called back" }, { signal });
 console.log(today.totalRecords);
 ```
 
-Aborting stops the request in flight and any retry that is waiting. On a list, it also stops every page that the loop has not fetched yet. The method rejects with the signal's reason, which is an `AbortError` for `controller.abort()` and a `TimeoutError` for `AbortSignal.timeout()`.
+When you abort, the client stops the request in flight and each retry that waits. On a list, it also stops every page that the loop has not fetched yet. The method rejects with the signal's reason, which is an `AbortError` for `controller.abort()` and a `TimeoutError` for `AbortSignal.timeout()`.
 
-The two timeouts do different jobs. `timeoutMs` bounds one attempt, and a `GET` that hits it is retried. `AbortSignal.timeout()` bounds the whole operation, including retries and later pages, and nothing retries after it fires.
+The two timeouts do different jobs. `timeoutMs` sets the limit for one try, and the client retries a `GET` that reaches it. `AbortSignal.timeout()` sets the limit for the whole operation, with its retries and later pages. Nothing retries after it fires.
 
-If you abort a write after the client sent it, CallRail may still apply it. Read the record again before you repeat the write.
+CallRail can apply a write that you abort after the client sent it. Read the record again before you repeat the write.
 
 ```ts
 import { CallId } from "callrail";
@@ -110,7 +117,7 @@ try {
   await account.calls.update(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"), { note: "Called back" }, { signal: controller.signal });
 } catch (error) {
   if (!(error instanceof DOMException && error.name === "AbortError")) throw error;
-  console.log("Cancelled. Read the call again to see whether the note was saved.");
+  console.log("Canceled. Read the call again to see if CallRail saved the note.");
 }
 ```
 
@@ -136,6 +143,6 @@ export const callrail = new CallRail({ apiKey, fetch: logged });
 
 The API key travels in the `Authorization` header and never in the URL, so the URL is safe to log. Do not log `init.headers`.
 
-The client follows URLs that CallRail returns, such as the next page of calls and text message media, only when their origin matches `baseUrl`. That check keeps your API key from reaching any other host.
+The client uses a URL that CallRail returns, such as the next page of calls or text message media, only when its origin matches `baseUrl`. That check keeps your API key from reaching any other host.
 
 To test code that uses the client, pass the scripted `fakeFetch` from `callrail/testing`. [Testing](testing.md) shows how.

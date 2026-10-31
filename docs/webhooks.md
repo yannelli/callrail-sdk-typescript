@@ -1,6 +1,6 @@
 # Webhooks
 
-CallRail can POST an event to your server when a call starts, is routed, ends, or changes, when a text arrives or goes out, when a form is submitted, and when Convert Assist finishes. `callrail/webhooks` checks that each request came from CallRail and turns its body into a typed event. It never sends a request itself. [Integrations](integrations.md#create-an-integration) shows how to register your URLs.
+CallRail can send an event to your server in a POST request. It sends the 10 kinds of events in [Know the events](#know-the-events). `callrail/webhooks` checks that each request came from CallRail and turns its body into a typed event. It never sends a request itself. [Integrations](integrations.md#create-an-integration) shows how to register your URLs.
 
 ## Know the events
 
@@ -54,22 +54,22 @@ app.use(express.json());
 app.listen(3000);
 ```
 
-`readWebhook` checks the `Signature` header against the body before it reads anything, then decodes the body as the kind you named. It needs the body exactly as it arrived, as bytes. `express.raw()` gives you a `Buffer`, which is a `Uint8Array`. Register webhook routes before `express.json()`, because a body that `express.json()` already parsed cannot be verified. The type accepts only a `Uint8Array`, since turning bytes into a string or into JSON and back can change the bytes that CallRail signed.
+`readWebhook` checks the `Signature` header against the body before it reads anything, then decodes the body as the kind you named. It needs the body exactly as it arrived, as bytes. `express.raw()` gives you a `Buffer`, which is a `Uint8Array`. Register webhook routes before `express.json()`. After `express.json()` parses a body, `readWebhook` cannot make a check of its signature. The type accepts only a `Uint8Array`. If you change the bytes to a string or to JSON and back, the result can differ from the bytes that CallRail signed.
 
 ## Respond to a rejected webhook
 
 `readWebhook` throws a `WebhookError` whose `reason` says what went wrong.
 
 - `missing_signature` means the request has no `Signature` header, so it did not come from CallRail. Respond with 401.
-- `bad_signature` means the signature does not match the body. Either the request did not come from CallRail, or your signing key is wrong, or the body was changed before it reached `readWebhook`. Respond with 401. A burst of these after a deploy usually means the key or the body handling changed.
-- `malformed_body` means CallRail signed the request, but the body does not match the documented shape of the kind you named. `error.path` points at the value that did not match. Keep the raw body so you can process it later, and respond with a 2xx.
+- `bad_signature` means the signature does not match the body. It also means that the request has more than one `Signature` header, or a header that is not strict Base64. The usual causes are a request that did not come from CallRail, an incorrect signing key, or a body that changed before `readWebhook` got it. Respond with 401. Many of these errors after a deploy usually mean that the key or the body handling changed.
+- `malformed_body` means CallRail signed the request, but the body does not match the documented shape of the kind you named. `error.path` points at the value that did not match. If the body is not UTF-8 text or not JSON, `error.path` is `null`. If you set `maxAgeMs` and the `timestamp` is not a date, the reason is also `malformed_body`, with the path `$.timestamp`. Keep the raw body so you can process it later, and respond with a 2xx.
 - `stale` means the event is older than the `maxAgeMs` you allowed. Skip it and respond with a 2xx.
 
-CallRail never resends a webhook, whatever you respond. It may turn off an integration after repeated failed deliveries, so answer every request CallRail signed with a 2xx, even one your code could not use.
+CallRail never sends a webhook again, whatever your response is. After many failed deliveries, CallRail can turn off the integration. Thus, respond with a 2xx to each request that CallRail signed, also when your code cannot use it.
 
 ## Route every kind through one handler
 
-`isWebhookKind` checks a route parameter, so one route can serve every kind. Checking `event.event` narrows the payload.
+`isWebhookKind` checks a route parameter, so one route can receive each kind. A check of `event.event` narrows the payload type.
 
 ```ts
 // router.ts
@@ -145,11 +145,11 @@ export async function POST(request: Request): Promise<Response> {
 }
 ```
 
-Do not call `request.json()` or `request.text()` first. Both read the body, and neither gives back the exact bytes. The key is read inside the handler, so a build that runs without the variable still succeeds. An empty key makes `readWebhook` throw a `TypeError` that names the problem on the first request.
+Do not call `request.json()` or `request.text()` first. Both read the body, and neither gives back the exact bytes. The handler reads the key, so a build without the variable still succeeds. If the key is empty, `readWebhook` throws a `TypeError` on the first request. The error message names the problem.
 
 ## Reject replayed events
 
-A captured webhook can be sent to you again by someone else, and its signature still matches. For five kinds, `readWebhook` can refuse an event whose `timestamp` is too old.
+Another person can capture a webhook and send it to you again, and its signature still matches. For five kinds, `readWebhook` can refuse an event whose `timestamp` is too old.
 
 ```ts
 import { readWebhook, type WebhookRequest } from "callrail/webhooks";
@@ -162,7 +162,7 @@ export function screenPop(request: WebhookRequest) {
 
 `maxAgeMs` is available for `pre_call`, `answered_call`, `sms_received`, `sms_sent`, and `convert_assist_complete`. Their timestamps are close to the moment CallRail sends them. An older event throws a `WebhookError` with reason `stale`. `now` replaces the clock, which helps in tests.
 
-The type refuses `maxAgeMs` for the other kinds. In CallRail's published example, a call webhook's `timestamp` is the call's start time, not the time it was sent. A `post_call` webhook can arrive 20 minutes after hangup and an `updated_call` webhook days later, so an age limit would throw away real events, and CallRail never resends them. `form_captured` has no timestamp at all. For these kinds, store each event by its id, as the `Map` in the first example does. Every payload is a full copy of the record, so a replay writes the same record again and changes nothing.
+The type refuses `maxAgeMs` for the other kinds. In CallRail's published example, a call webhook's `timestamp` is the call's start time, not the time it was sent. A `post_call` webhook can arrive 20 minutes after hangup, and an `updated_call` webhook can arrive days later. An age limit would discard real events, and CallRail never sends them again. `form_captured` has no timestamp at all. For these kinds, store each event by its id, as the `Map` in the first example does. Every payload is a full copy of the record, so a replay writes the same record again and changes nothing.
 
 ## Find the signing key
 
@@ -180,11 +180,11 @@ if (integration.signingKey === null) {
 console.log(integration.signingKey);
 ```
 
-A server that receives webhooks for several companies needs the right key before it can verify anything. Put the company in the URL, such as `/webhooks/callrail/COM8154748ae6bd4e278a7cddd38a662f4f/post_call`, and look up that company's key.
+A server that receives webhooks for many companies must find the correct key before it can make a check of a signature. Put the company in the URL, such as `/webhooks/callrail/COM8154748ae6bd4e278a7cddd38a662f4f/post_call`, and look up that company's key.
 
-## Verify without decoding
+## Check the signature only
 
-`verifyWebhook` checks the signature and throws the same errors as `readWebhook`, without decoding the body. Use it when you pass the raw request on to a queue and decode it later.
+`verifyWebhook` checks the signature and throws the same errors as `readWebhook`. It does not decode the body. Use it when you send the raw request to a queue and decode it later.
 
 ```ts
 import { verifyWebhook, WebhookError } from "callrail/webhooks";
@@ -205,14 +205,16 @@ export async function POST(request: Request): Promise<Response> {
 }
 ```
 
-The worker that takes a job off the queue calls `readWebhook` with the stored body and signature, which verifies the request again before it decodes it.
+The worker that takes a job from the queue calls `readWebhook` with the stored body and signature. `readWebhook` checks the signature again before it decodes the body.
 
 ## Read the payloads
 
-- `call` is a `WebhookCall`. It has every base field of a call from the REST API, plus whichever optional fields CallRail included. Webhook bodies send numbers for most ids and `""` for empty values, and the decoder turns them into the same branded ids and `null`s that the REST API returns. In a `pre_call` or `answered_call` event the call is still in progress, so `duration` can be `null`, and a missing `answered` or `voicemail` reads as `false`.
+- `call` is a `WebhookCall`. It has each base field of a call from the REST API, and the optional fields that CallRail included. In a `pre_call` or `answered_call` event, the call is still in progress. Thus `duration` can be `null`, and a missing `answered` or `voicemail` reads as `false`.
 - `changes` lists the fields that changed, such as `tags`, `note`, or `call_summary`. The `call` already holds the new values.
 - `message` is a `WebhookText`. `sourceNumber` is formatted as CallRail displays it, such as `770-555-5555`, not in E.164 format. `mediaUrls` expire soon, so download the media right away and store the files, not the links. `leadStatus` can be any of the four values that [Text messages](text-messages.md#read-a-conversations-lead-status) describes.
 - `submission` holds the form's fields in `formData`, keyed by field name, plus the page and the attribution fields.
 - `convertAssist` holds the person, the last interaction, and Convert Assist's answers.
+
+Webhook bodies send numbers for most ids. The decoder changes them into the same branded ids that the REST API returns. Some bodies send `""` for an empty value. The decoder changes `""` to `null` for a field that is not a string, such as an object, a number, or an id. A string field, such as `note`, keeps `""`.
 
 To test your handlers, sign a fixture body with `signWebhook`, as [Testing](testing.md#test-a-webhook-handler) shows.

@@ -25,7 +25,7 @@ for (const user of page.items) {
 }
 ```
 
-`companyId` limits the list to the users of one company. `search` matches one term against first name, last name, and email. `sort` accepts `email` and `createdAt`. `accepted` says whether the user accepted their invitation. Only the list table documents it, so a user from any other method may have `accepted: null`.
+`companyId` limits the list to the users of one company. `search` matches one term against first name, last name, and email. `sort` accepts `email` and `createdAt`. `accepted` is `true` if the user accepted the invitation. Only the list table documents it, so a user from a different method can have `accepted: null`.
 
 ## Get a user
 
@@ -38,7 +38,7 @@ const user = await account.users.get(UserId("USR8154748ae6bd4e278a7cddd38a662f4f
 console.log(user.name, user.role, user.createdAt);
 ```
 
-`role` is an open string. CallRail's create and update tables mention a `notification` role without describing it, so a user with a role this package does not list still reads without an error.
+`role` is an open string. CallRail's create and update tables mention a `notification` role, but they do not describe it. Thus the client reads a user with a role that this package does not list without an error.
 
 ## Create a user
 
@@ -83,7 +83,7 @@ console.log(user.companies);
 
 `companies` replaces the user's list, so a company you leave out loses the user. Only an administrator can change it, and only for managers and reporting users. CallRail updates only users who accepted their invitation.
 
-Names and email can change only for the user who owns the API key. CallRail answers a change to anyone else's name or email with an error. Changing an email also takes that user's current password, so the type accepts `email` only together with `currentPassword`.
+Names and email can change only for the user who owns the API key. CallRail answers a change to anyone else's name or email with an error. A change of email also needs the current password of that user, so the type accepts `email` only together with `currentPassword`.
 
 ```ts
 import type { UserId } from "callrail";

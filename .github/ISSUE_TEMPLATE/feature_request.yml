@@ -1,0 +1,23 @@
+name: Feature request
+description: Ask for a new method, option, or type.
+labels: [enhancement]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: Need
+      description: The task that you cannot do with the client now.
+    validations:
+      required: true
+  - type: input
+    id: endpoint
+    attributes:
+      label: CallRail API endpoint
+      description: A link to the endpoint in the CallRail API reference, if the request is for an endpoint.
+      placeholder: https://apidocs.callrail.com/#...
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed API
+      description: The code that you want to write.
+      render: ts

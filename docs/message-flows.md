@@ -1,6 +1,6 @@
 # Message flows
 
-A message flow decides what happens when a tracking number receives a text. It can reply at certain hours, tag the conversation, forward the text, or stay quiet. You build flows here and attach one to a tracker in [Trackers](trackers.md#turn-on-texting). A tracker that only needs one automatic reply does not need a flow.
+A message flow decides what happens when a tracking number receives a text. It can reply at set hours, tag the conversation, forward the text, or send no reply. You build flows here and attach one to a tracker in [Trackers](trackers.md#turn-on-texting). A tracker that only needs one automatic reply does not need a flow.
 
 CallRail runs a flow only on a local number in the United States or Canada that is registered for 10DLC and has texting turned on. Accounts with Lead Center turned on cannot use flows. A lead receives the reply from a given step at most once in 24 hours.
 
@@ -51,7 +51,7 @@ for (const step of flow.steps) {
 }
 ```
 
-CallRail stores steps as a map keyed by step id, next to the id of the initial step. The client gives you a list with the initial step first. A step type this package does not know arrives as `other`, with CallRail's type name in `wireType` and the step's JSON in `raw`.
+CallRail stores steps as a map keyed by step id, next to the id of the start step. The client gives you a list with the start step first. A step type this package does not know arrives as `other`, with CallRail's type name in `wireType` and the step's JSON in `raw`.
 
 ## Create a message flow
 
@@ -95,23 +95,30 @@ const flow = await account.messageFlows.create({
 console.log(flow.id, flow.steps.map((step) => step.id));
 ```
 
-The first step in `steps` is the initial step. Each step's `nextStepId` names the step that runs after it, and `null` ends the flow. Step ids are yours to pick. CallRail recommends the step type plus a number, such as `response-01`. CallRail replaces them with generated ids when it saves the flow, so the flow you get back has different ids.
+The first step in `steps` is the start step. Each step's `nextStepId` names the step that runs after it, and `null` ends the flow. You select the step ids. CallRail recommends the step type plus a number, such as `response-01`. CallRail replaces them with generated ids when it saves the flow, so the flow you get back has different ids.
 
-CallRail's wire format names the initial step twice, once in `initial_step_id` and again in an `initial_step` flag that must be `true` on that step and `false` on the rest. The client derives both from the order of the list, so they always agree. Before it sends anything, it throws a `TypeError` when two steps share an id or when a `nextStepId` names a step that is not in the list. CallRail also requires the name to be unique.
+CallRail's wire format names the start step two times. One is `initial_step_id`. The other is an `initial_step` flag, which is `true` on that step and `false` on the other steps. The client sets both from the sequence of the list, so they always agree.
+
+Before it sends a request, the client throws a `TypeError` in these conditions:
+
+- Two steps have the same id.
+- A `nextStepId` names a step that is not in the list.
+
+CallRail also needs a unique name for the flow.
 
 Each step type does one thing.
 
-- `schedule` sends the text down the branch whose `times` include the moment the text arrives. Every step needs a `nextStepId`, including a schedule, but CallRail does not document when a schedule uses its own `nextStepId` instead of a branch's. CallRail's example sets it to the first branch's step, and so does this one.
-- `sms_response` replies with `message`, which can be up to 1550 characters. A reply longer than 160 characters may arrive as several texts. `firstText: true` replies only to someone texting the business for the first time. When the reply is the first text a lead gets from you, CallRail adds opt-out instructions unless the message already mentions STOP, CANCEL, UNSUBSCRIBE, QUIT, or END.
+- `schedule` sends the text down the branch whose `times` include the moment the text arrives. Each step needs a `nextStepId`, also a schedule, but CallRail does not document when a schedule uses its own `nextStepId` instead of a branch's. CallRail's example sets it to the first branch's step, and so does this one.
+- `sms_response` replies with `message`, which can be up to 1550 characters. A reply of more than 160 characters can arrive as more than one text. `firstText: true` replies only to a person who sends a text to the business for the first time. If the reply is the first text that a lead gets from you, CallRail adds opt-out instructions. It does not add them if the message has STOP, CANCEL, UNSUBSCRIBE, QUIT, or END.
 - `tag` applies the tags in `tagIds` to the conversation. The list cannot be empty.
 - `forward_message` forwards the text to `destinationNumber`, an E.164 number that can receive texts. HIPAA and white-label accounts cannot use it.
-- `no_response` sends nothing. Use it for a branch that should stay quiet.
+- `no_response` sends nothing. Use it for a branch that sends no reply.
 
 A schedule window is a `day` plus a `startTime` and an `endTime` in 24-hour `HHMM`. The type rejects times such as `"2400"` or `"8:00"`. The start must come before the end, so a window cannot cross midnight. Split it in two, the way the weekday evening and early morning windows above do. Windows cannot overlap within a branch or across branches. `day` is `any_day`, `weekdays`, `weekends`, or a day of the week such as `monday`.
 
 ## Update a message flow
 
-`name` renames the flow. `steps` replaces every step, so send the whole list. A step read with `get` can go straight back into `steps`, except an `other` step, because this package cannot write a step type it does not know. TypeScript rejects an `other` step in `steps`, so your code has to decide what to do with one. This example throws.
+`name` renames the flow. `steps` replaces every step, so send the whole list. You can put a step from `get` back into `steps`, but not an `other` step. This package cannot write a step type that it does not know. TypeScript rejects an `other` step in `steps`, so your code must decide what to do with one. This example throws.
 
 ```ts
 import { MessageFlowId, type MessageFlowStep, type MessageFlowStepInput, type NonEmpty } from "callrail";

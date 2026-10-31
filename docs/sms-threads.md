@@ -1,6 +1,6 @@
 # SMS threads
 
-An SMS thread is the texting history between one customer and a company, with the notes, tags, value, and lead qualification your team adds to it. It covers the same texts as [Text messages](text-messages.md). Use threads when you manage the conversation as a record and text messages when you read or send texts.
+An SMS thread is the history of text messages between one customer and a company. It also has the notes, tags, value, and lead qualification that your team adds. It covers the same texts as [Text messages](text-messages.md). Use threads to manage the conversation as a record. Use text messages to read or send texts.
 
 ## List threads
 
@@ -19,7 +19,7 @@ for (const thread of page.items) {
 }
 ```
 
-`search` matches one term against the customer's phone number, the customer's name, and tag names. CallRail leaves `lastMessageAt` and the formatted names and numbers out of a list unless they are requested, and the client always requests them, so a thread from `list` has the same fields as a thread from `get`.
+`search` matches one term against the customer's phone number, the customer's name, and tag names. CallRail sends `lastMessageAt` and the formatted names and numbers in a list only on request. The client always requests them, so a thread from `list` has the same fields as a thread from `get`.
 
 ## Get a thread and its messages
 
@@ -36,7 +36,7 @@ for await (const message of messages) {
 }
 ```
 
-A page holds at most 100 messages. `messageType` is `sms` or `mms`, lowercased. `message.error` stays `null` unless you pass `withMessageErrors: true`. With it, CallRail adds error details to each message that failed. The docs do not describe their shape, so the type is `JsonValue`.
+A page holds at most 100 messages. `messageType` is `sms` or `mms`, lowercased. `message.error` stays `null` unless you pass `withMessageErrors: true`. With it, CallRail adds error details to each message that failed. CallRail does not document their shape, so the type is `JsonValue`.
 
 ## Update a thread
 
@@ -54,4 +54,4 @@ const thread = await account.smsThreads.update(SmsThreadId("KkMhr"), {
 console.log(thread.tags, thread.value, thread.leadQualification);
 ```
 
-Keys you leave out stay as they are, and `null` clears `notes`, `value`, and `leadQualification`. `tags` takes `{ add: [...] }` to keep the existing tags or `{ replace: [...] }` to set the exact list, as [Tags](tags.md) explains. `value` is in dollars, and the client sends it as a two-decimal string. `leadQualification` accepts `good_lead`, `not_a_lead`, or `null`.
+Keys you leave out stay as they are. `null` clears `notes`, `value`, and `leadQualification`. `tags` takes `{ add: [...] }` to keep the existing tags or `{ replace: [...] }` to set the exact list, as [Tags](tags.md) explains. `value` is in dollars, and the client sends it as a two-decimal string. `leadQualification` accepts `good_lead`, `not_a_lead`, or `null`.

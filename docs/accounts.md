@@ -83,11 +83,11 @@ await account.tags.update(TagId("993186"), { color: "blue1" });
 console.log(call.startTime);
 ```
 
-Most ids are strings that start with a prefix, such as `CAL` for calls and `COM` for companies. Older records and webhook payloads send some of the same ids as plain numbers, so the string id constructors accept a number too and store it as a string. `CallId(766970532)` and `CallId("766970532")` are equal.
+Most ids are strings that start with a prefix, such as `CAL` for calls and `COM` for companies. Older records and webhook payloads send some of these ids as plain numbers. For this reason, the string id constructors also accept a number and store it as a string. `CallId(766970532)` and `CallId("766970532")` are equal.
 
 Tags, integrations, integration filters, notifications, and outbound caller ids have integer ids everywhere. Their types, `TagId`, `IntegrationId`, `IntegrationFilterId`, `NotificationId`, and `CallerIdId`, wrap numbers, and their constructors also accept a string of digits, such as a route parameter.
 
-The constructors throw a `TypeError` for an empty string, a string with spaces around it, a negative number, and a fraction. They do not check prefixes.
+The constructors throw a `TypeError` for an empty string, a string with spaces around it, a negative number, a fraction, and a number above `Number.MAX_SAFE_INTEGER`. The integer id constructors also throw for a string that is not all digits, such as `"12a"`. The constructors do not check prefixes.
 
 ## Keep session and source trackers apart
 

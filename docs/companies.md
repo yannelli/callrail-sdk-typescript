@@ -14,7 +14,7 @@ for (const company of page.items) {
 }
 ```
 
-`status` is `active` or `disabled`, and `search` matches one term against the company name. `fields` can add `verifiedCallerIds`, the outbound caller ids verified for the company.
+`status` is `active` or `disabled`. `search` matches one term against the company name. `fields` can add `verifiedCallerIds`, which lists the outbound caller ids of the company that completed the verification call.
 
 ## Get one company
 
@@ -27,7 +27,7 @@ const company = await account.companies.get(CompanyId("COM8154748ae6bd4e278a7cdd
 console.log(company.name, company.status, company.scriptUrl, company.swapCookieDuration);
 ```
 
-`scriptUrl` is the tracking script to install on the company's website. `swapCookieDuration` joins CallRail's `swap_cookie_duration` and `swap_cookie_duration_unit` into one `{ value, unit }` object, or `null` when either is missing, because one means nothing without the other.
+`scriptUrl` is the tracking script to install on the company's website. `swapCookieDuration` joins CallRail's `swap_cookie_duration` and `swap_cookie_duration_unit` into one `{ value, unit }` object. It is `null` when one of the two is missing, because one has no meaning without the other.
 
 CallRail sends `null` for `swapPpcOverride` until the override is first set, and always sends `null` for the deprecated `swapExcludeJquery`. The client reads both as `false`.
 
@@ -65,7 +65,7 @@ Keys you leave out stay as they are. `callscribeEnabled` turns on transcripts an
 
 ## Update many companies at once
 
-`companies.bulkUpdate` turns external form capture on or off for a list of companies, or for every company in the account with `"all"`. It resolves the number of companies CallRail updated.
+`companies.bulkUpdate` turns external form capture on or off for a list of companies, or for every company in the account with `"all"`. It resolves `{ updatedRecords }`, the number of companies that CallRail updated.
 
 ```ts
 import { account } from "./callrail.js";

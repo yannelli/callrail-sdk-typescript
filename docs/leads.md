@@ -18,7 +18,7 @@ for (const lead of page.items) {
 }
 ```
 
-Leads return every field unless you narrow them. Pass `fields` to keep only the fields you name, and the client adds `id`. The result type narrows too, so reading a field you did not name does not compile.
+Leads return every field unless you narrow them. Pass `fields` to keep only the fields you name, and the client adds `id`. The result type narrows too, so code that reads a field you did not name does not compile.
 
 ```ts
 import { account } from "./callrail.js";
@@ -65,8 +65,8 @@ for await (const event of events) {
 }
 ```
 
-Each event has an `id`, an `eventDate`, and a `type`. An event whose type the client does not know arrives as `other`, with CallRail's type name in `wireType` and the event's JSON in `raw`, so a new kind of event never breaks your loop.
+Each event has an `id`, an `eventDate`, and a `type`. If the client does not know the type of an event, the event arrives as `other`. Then `wireType` holds the type name from CallRail, and `raw` holds the JSON of the event. Thus a new kind of event never breaks your loop.
 
-The summary holds the first touch, the last touch, the moment the person became a lead, and the moment they qualified, each with a source and a medium. CallRail names the lead's creation time `lead_creation_time`. The client reads it into `lead.leadCreation.createdAt`, like the other touchpoints.
+The summary holds four touchpoints, each with a source and a medium. They are `firstTouch`, `lastTouch`, `leadCreation` for the time the person became a lead, and `leadQualification` for the time the lead qualified. CallRail names the lead's creation time `lead_creation_time`. The client reads it into `lead.leadCreation.createdAt`, like the other touchpoints.
 
-The summary also holds the lead's tags, its Convert Assist answers, its attribution, and `clickId`, which maps click ids such as `gclid` and `fbclid` to their values. Timeline tags carry string ids such as `TAG123`, unlike tag records, so their `id` is a plain `string`.
+The summary also holds the tags of the lead, the `convertAssist` answers, the attribution fields, and `clickId`. `clickId` maps click ids, such as `gclid` and `fbclid`, to their values. Timeline tags have string ids, such as `TAG123`, but tag records have integer ids. Thus the `id` of a timeline tag is a plain `string`.

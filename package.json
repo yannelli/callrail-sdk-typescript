@@ -1,7 +1,27 @@
 {
   "name": "callrail",
   "version": "0.0.0",
-  "description": "Typed Node.js client for the CallRail API v3.",
+  "description": "TypeScript SDK for the CallRail API v3. A typed Node.js client with automatic pagination, safe retries, webhook signature checks, and test helpers.",
+  "keywords": [
+    "callrail",
+    "callrail-api",
+    "callrail-sdk",
+    "call-tracking",
+    "sdk",
+    "api-client",
+    "typescript",
+    "nodejs",
+    "webhooks",
+    "sms",
+    "lead-tracking",
+    "marketing-attribution"
+  ],
+  "homepage": "https://github.com/yannelli/callrail-sdk-typescript#readme",
+  "bugs": {
+    "url": "https://github.com/yannelli/callrail-sdk-typescript/issues"
+  },
+  "license": "MIT",
+  "author": "Ryan Yannelli",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/yannelli/callrail-sdk-typescript.git"

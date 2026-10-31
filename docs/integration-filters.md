@@ -17,7 +17,7 @@ for (const filter of page.items) {
 }
 ```
 
-CallRail requires `companyId`, so the type does too. Each filter carries a short `integration` with the integration's `id` and `type`. The default filter has `integrationId: null`, and its integration type reads `All (Default Integration Trigger)`. A rule set to `null` is not in use, so a `callType` of `null` passes every type of call.
+CallRail needs `companyId`, so the type needs it too. Each filter carries a short `integration` with the integration's `id` and `type`. The default filter has `integrationId: null`, and its integration type reads `All (Default Integration Trigger)`. A rule set to `null` is not in use, so a `callType` of `null` passes every type of call.
 
 ## Create a filter
 
@@ -44,7 +44,7 @@ console.log(filter.id, filter.integrationId);
 
 The integration must exist and be active. CallRail answers with a 400 when the integration already has a filter, and with an error when its type cannot be filtered.
 
-CallRail's tables type `lead_status` as an integer while listing `good_lead` and `not_a_lead` as its values. The client sends the string it is given, and reads whichever CallRail returns, so `filter.leadStatus` is `string | number | null`.
+CallRail's tables give `lead_status` the type integer, but they list `good_lead` and `not_a_lead` as its values. The client sends the string that you give it and reads the value that CallRail returns. Thus `filter.leadStatus` is `string | number | null`.
 
 ## Get a filter
 
@@ -71,7 +71,7 @@ const filter = await account.integrationFilters.update(IntegrationFilterId(88), 
 console.log(filter.callType, filter.maxDuration);
 ```
 
-Keys you leave out stay as they are, and `null` turns a rule off. The integration a filter belongs to cannot change. CallRail's update table types `min_duration` and `max_duration` as strings, while its other tables type them as integers. The client sends numbers.
+Keys you leave out stay as they are. `null` turns off `callType`, `minDuration`, `maxDuration`, or `leadStatus`. `trackerIds` does not accept `null`. The integration a filter belongs to cannot change. CallRail's update table types `min_duration` and `max_duration` as strings, while its other tables type them as integers. The client sends numbers.
 
 ## Delete a filter
 

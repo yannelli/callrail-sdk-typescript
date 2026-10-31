@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Report a security vulnerability
+    url: https://github.com/yannelli/callrail-sdk-typescript/security/advisories/new
+    about: Report a vulnerability in private. Do not open a public issue.
+  - name: CallRail API reference
+    url: https://apidocs.callrail.com/
+    about: Read the official documentation for the CallRail API v3.

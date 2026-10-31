@@ -71,9 +71,9 @@ Run it with `node --test`, as you run your other tests.
 - `{ json }` sends a JSON body with a JSON content type.
 - `{ text }` sends a body as written, such as an HTML error page or the empty body of a 204.
 - `status` sets the status and defaults to 200. `headers` adds response headers, such as `retry-after`.
-- `{ networkError: "..." }` makes the request fail the way a dropped connection does.
+- `{ networkError: "..." }` makes the request fail as a lost connection does.
 
-A request beyond the last reply fails with its method and URL in the error message. Replies never match by URL. Matching would hide a wrong URL, and the recorded requests would still look right.
+If a request comes after the last reply, it fails. The error message gives its method and URL. Replies never match by URL, because a match by URL would hide an incorrect URL.
 
 ## Read the recorded requests
 
@@ -81,7 +81,7 @@ A request beyond the last reply fails with its method and URL in the error messa
 
 - `method` is the HTTP method, and `url` is the exact URL fetched.
 - `path` is the pathname only, such as `/v3/a/ACC8154748ae6bd4e278a7cddd38a662f4f/calls.json`.
-- `query` holds the decoded query values. A repeated key, such as `tags[]`, collects into an array.
+- `query` holds the decoded query values. A repeated key collects into an array. A key that ends in `[]`, such as `tags[]`, is always an array, also when it has one value.
 - `headers` has lowercased names, so the API key is in `headers.authorization`.
 - `body` is `{ kind: "none" }`, `{ kind: "json", value }`, or `{ kind: "multipart", fields }`. A file in a multipart body records its `filename`, `type`, and `size`.
 
