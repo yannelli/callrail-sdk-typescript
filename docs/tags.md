@@ -7,7 +7,7 @@ This chapter manages the tag records. You put tags on an interaction through tha
 ## List tags
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.tags.list({
@@ -26,7 +26,7 @@ for (const tag of page.items) {
 ## Create a tag
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const quote = await account.tags.create({
@@ -45,7 +45,7 @@ A tag without `level` is a company tag and needs `companyId`. `level: "account"`
 ## Rename, recolor, or disable a tag
 
 ```ts
-import { TagId } from "callrail";
+import { TagId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const renamed = await account.tags.update(TagId(993186), { name: "Quote sent", color: "blue2" });
@@ -61,7 +61,7 @@ CallRail's field table types `disabled` as a string, but the description in the 
 ## Delete a tag
 
 ```ts
-import { TagId } from "callrail";
+import { TagId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.tags.delete(TagId(993186));
@@ -74,7 +74,7 @@ When you delete a tag, CallRail removes it from each call flow and from each int
 Calls, form submissions, and SMS threads take tags by name in their `update` methods. `tags` is a `TagChange`, which either adds names or replaces the whole list.
 
 ```ts
-import { CallId, FormSubmissionId, SmsThreadId } from "callrail";
+import { CallId, FormSubmissionId, SmsThreadId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.calls.update(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"), { tags: { add: ["Quote requested"] } });

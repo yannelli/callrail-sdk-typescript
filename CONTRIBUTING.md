@@ -1,6 +1,6 @@
 # Contributing to callrail
 
-Thank you for your help with `callrail`, the TypeScript client for the CallRail API v3. This guide tells you how to report a problem, set up the project, and send a pull request.
+Thank you for your help with `@yannelli/callrail`, the TypeScript client for the CallRail API v3. This guide tells you how to report a problem, set up the project, and send a pull request.
 
 ## Report a bug or ask for a feature
 
@@ -47,8 +47,8 @@ The tests do not send requests to CallRail. Each test gives the client the scrip
 | `src/pagination.ts` | Offset and relative pages. |
 | `src/query.ts` | Shared query types, such as dates, sorts, and tag changes. |
 | `src/resources/` | One file for each API resource. |
-| `src/webhooks.ts` | The `callrail/webhooks` entry point. |
-| `src/testing.ts` | The `callrail/testing` entry point. |
+| `src/webhooks.ts` | The `@yannelli/callrail/webhooks` entry point. |
+| `src/testing.ts` | The `@yannelli/callrail/testing` entry point. |
 | `test/operations.ts` | The catalog of all API operations, with the HTTP method and path of each. |
 | `docs/` | One chapter for each topic and each resource. |
 | `scripts/check-docs.ts` | The checker that `npm run docs:check` runs. |
@@ -83,10 +83,22 @@ Fence each TypeScript example as `ts`. The checker compiles each `ts` block unde
 
 1. Fork the repository and make a branch from `main`.
 2. Make one change in each pull request.
-3. Add an entry under "Unreleased" in [CHANGELOG.md](CHANGELOG.md) for a change that users can see.
-4. Write the commit message in the [Conventional Commits](https://www.conventionalcommits.org/) format, such as `fix(calls): send value as a two-decimal string`.
-5. Run the four checks.
-6. Open the pull request and complete the template.
+3. Write the pull request title in the [Conventional Commits](https://www.conventionalcommits.org/) format, such as `fix(calls): send value as a two-decimal string`. A check fails if the title does not follow it.
+4. Run the four checks.
+5. Open the pull request and complete the template.
+
+## Know how releases work
+
+Each pull request is squash-merged into `main`. The merged commit has the pull request title. Then the release workflow reads the commits since the last version tag and selects the next version.
+
+| Commit type | Next version |
+| --- | --- |
+| `feat` | Minor, such as 0.1.0 to 0.2.0. |
+| `fix`, `perf`, or `revert` | Patch, such as 0.1.0 to 0.1.1. |
+| `!` before the colon, or a `BREAKING CHANGE` footer | Major, such as 0.1.0 to 1.0.0. |
+| `docs`, `chore`, `ci`, `build`, `refactor`, `style`, or `test` | No release. |
+
+The workflow then sets the version in `package.json` and `package-lock.json`. It pushes a `chore(release)` commit and a `v` tag, makes a GitHub release with the notes, and publishes the package to npm with provenance. To see the next version and its notes on `main`, run `npm run release:dry-run`.
 
 ## License
 

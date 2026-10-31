@@ -1,5 +1,5 @@
 /**
- * `callrail/testing` is a scripted `fetch` for tests, yours and the SDK's.
+ * `@yannelli/callrail/testing` is a scripted `fetch` for tests, yours and the SDK's.
  *
  * `fakeFetch(...replies)` answers requests in order and records each one as
  * plain data, so a test asserts the literal method, path, query, and body the

@@ -19,7 +19,7 @@ Pass `hipaaAccount: true` or `hipaaAccount: false` to filter by HIPAA status. HI
 ## Get one account
 
 ```ts
-import { AccountId } from "callrail";
+import { AccountId } from "@yannelli/callrail";
 import { callrail } from "./callrail.js";
 
 const account = await callrail.accounts.get(AccountId("ACC8154748ae6bd4e278a7cddd38a662f4f"), { fields: ["numericId"] });
@@ -74,7 +74,7 @@ if (latest) {
 An id from your database, a URL, or an environment variable goes through the constructor of the same name once.
 
 ```ts
-import { CallId, TagId } from "callrail";
+import { CallId, TagId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const call = await account.calls.get(CallId("CAL8154748ae6bd4e278a7cddd38a662f4f"));

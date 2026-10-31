@@ -5,7 +5,7 @@ An SMS thread is the history of text messages between one customer and a company
 ## List threads
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.smsThreads.list({
@@ -24,7 +24,7 @@ for (const thread of page.items) {
 ## Get a thread and its messages
 
 ```ts
-import { SmsThreadId } from "callrail";
+import { SmsThreadId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const { thread, messages } = await account.smsThreads.get(SmsThreadId("KkMhr"), { perPage: 100, withMessageErrors: true });
@@ -41,7 +41,7 @@ A page holds at most 100 messages. `messageType` is `sms` or `mms`, lowercased. 
 ## Update a thread
 
 ```ts
-import { SmsThreadId } from "callrail";
+import { SmsThreadId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const thread = await account.smsThreads.update(SmsThreadId("KkMhr"), {

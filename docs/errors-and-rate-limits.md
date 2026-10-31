@@ -5,7 +5,7 @@ Each failed request rejects with a `CallRailError`. A canceled request rejects w
 ## Handle a failed request
 
 ```ts
-import { CallRailError, CompanyId } from "callrail";
+import { CallRailError, CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 try {
@@ -48,7 +48,7 @@ try {
 A function that returns a value from a `switch` over `problem.kind` fails to compile when it misses a kind. If a later version of this package adds one, the compiler points you at every place that needs it.
 
 ```ts
-import { CallRailError, type Problem } from "callrail";
+import { CallRailError, type Problem } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 function explain(problem: Problem): string {
@@ -87,7 +87,7 @@ try {
 When CallRail names the fields it rejected, `invalid_request` carries them in `fieldErrors`, keyed by CallRail's field name. The map is empty when the response named no fields.
 
 ```ts
-import { CallRailError, CompanyId } from "callrail";
+import { CallRailError, CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 try {
@@ -109,7 +109,7 @@ try {
 `error.request` holds the method and URL of the request that failed. The URL never contains the API key, which travels in a header. `error.responseText` holds the raw response body, or `null` when the client has no body.
 
 ```ts
-import { CallRailError } from "callrail";
+import { CallRailError } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 try {
@@ -136,7 +136,7 @@ CallRail counts each account's requests over an hour and over a day. Every proce
 The client has no rate limiter of its own. A counter in one process cannot see what other processes spent, so the 429 response from CallRail is the only reliable signal. The client never retries a 429, because the windows last an hour or a day. If you get `rate_limited`, do the work later.
 
 ```ts
-import { CallRailError, CompanyId } from "callrail";
+import { CallRailError, CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 export async function sendReminder(customerPhoneNumber: string): Promise<"sent" | "retry_later"> {

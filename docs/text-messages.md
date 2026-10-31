@@ -5,7 +5,7 @@ The text messages resource groups texts into conversations, one for each custome
 ## List conversations
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.textMessages.list({
@@ -31,7 +31,7 @@ CallRail documents the lead status of a text conversation in two places, and the
 The client gives `leadStatus` the type `LeadStatus | null`, which is the same type that calls use. This type covers all four documented values. It also decodes a status that neither table lists, so your code works with the live API if either table is correct. Handle each documented value.
 
 ```ts
-import type { LeadStatus } from "callrail";
+import type { LeadStatus } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 function label(status: LeadStatus | null): string {
@@ -58,7 +58,7 @@ To change the lead qualification of a conversation, use `smsThreads.update`, whi
 ## Get a conversation and its messages
 
 ```ts
-import { ConversationId } from "callrail";
+import { ConversationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const { conversation, messages } = await account.textMessages.get(ConversationId("KkMhr"), { perPage: 50 });
@@ -74,7 +74,7 @@ for await (const message of messages) {
 ## Send a text
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const conversation = await account.textMessages.send({
@@ -99,7 +99,7 @@ To attach media, pass `media` with either a public URL or the file's bytes. Call
 
 ```ts
 import { readFile } from "node:fs/promises";
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const companyId = CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f");
@@ -127,7 +127,7 @@ The links in `mediaUrls` expire soon after CallRail returns them. Download the m
 
 ```ts
 import { writeFile } from "node:fs/promises";
-import { ConversationId } from "callrail";
+import { ConversationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const { messages } = await account.textMessages.get(ConversationId("KkMhr"));

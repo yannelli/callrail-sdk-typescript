@@ -5,7 +5,7 @@ A notification alerts someone about new calls, new texts, or both. Each one has 
 ## List notifications
 
 ```ts
-import { UserId } from "callrail";
+import { UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.notifications.list({ userId: UserId("USR8154748ae6bd4e278a7cddd38a662f4f"), channel: "email" });
@@ -22,7 +22,7 @@ CallRail spreads a notification's settings across several flags. The client fold
 ## Create a notification
 
 ```ts
-import { CompanyId, TrackerId, UserId } from "callrail";
+import { CompanyId, TrackerId, UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const mine = await account.notifications.create({
@@ -59,7 +59,7 @@ console.log(mine.id, forLinda.id, forFrontDesk.id);
 ## Update a notification
 
 ```ts
-import { NotificationId } from "callrail";
+import { NotificationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const notification = await account.notifications.update(NotificationId(127), {
@@ -80,7 +80,7 @@ The recipient cannot change. To alert someone else, delete the notification and 
 ## Delete a notification
 
 ```ts
-import { NotificationId } from "callrail";
+import { NotificationId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.notifications.delete(NotificationId(127));

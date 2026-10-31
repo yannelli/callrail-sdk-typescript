@@ -7,7 +7,7 @@ CallRail's routes call filters `integration_triggers`. The client uses the produ
 ## List filters
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.integrationFilters.list({ companyId: CompanyId("COM8154748ae6bd4e278a7cddd38a662f4f") });
@@ -22,7 +22,7 @@ CallRail needs `companyId`, so the type needs it too. Each filter carries a shor
 ## Create a filter
 
 ```ts
-import { CompanyId, IntegrationId, TrackerId } from "callrail";
+import { CompanyId, IntegrationId, TrackerId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const filter = await account.integrationFilters.create({
@@ -49,7 +49,7 @@ CallRail's tables give `lead_status` the type integer, but they list `good_lead`
 ## Get a filter
 
 ```ts
-import { IntegrationFilterId } from "callrail";
+import { IntegrationFilterId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const filter = await account.integrationFilters.get(IntegrationFilterId(88));
@@ -60,7 +60,7 @@ console.log(filter.integration, filter.callType, filter.leadStatus);
 ## Update a filter
 
 ```ts
-import { IntegrationFilterId } from "callrail";
+import { IntegrationFilterId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const filter = await account.integrationFilters.update(IntegrationFilterId(88), {
@@ -76,7 +76,7 @@ Keys you leave out stay as they are. `null` turns off `callType`, `minDuration`,
 ## Delete a filter
 
 ```ts
-import { IntegrationFilterId } from "callrail";
+import { IntegrationFilterId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.integrationFilters.delete(IntegrationFilterId(88));

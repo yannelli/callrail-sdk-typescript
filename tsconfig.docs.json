@@ -3,9 +3,9 @@
   "compilerOptions": {
     "noEmit": true,
     "paths": {
-      "callrail": ["./src/index.ts"],
-      "callrail/webhooks": ["./src/webhooks.ts"],
-      "callrail/testing": ["./src/testing.ts"]
+      "@yannelli/callrail": ["./src/index.ts"],
+      "@yannelli/callrail/webhooks": ["./src/webhooks.ts"],
+      "@yannelli/callrail/testing": ["./src/testing.ts"]
     }
   },
   "include": [".docs-check/**/*.ts"]

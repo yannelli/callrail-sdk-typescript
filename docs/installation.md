@@ -1,28 +1,24 @@
 # Installation
 
-The `callrail` package is a typed Node.js client for the CallRail API v3. It has no runtime dependencies.
+The `@yannelli/callrail` package is a typed Node.js client for the CallRail API v3. It has no runtime dependencies.
 
 ## Before you install
 
 You need these items:
 
 - Node.js 20 or later. The client uses the global `fetch`, `FormData`, `Blob`, and `AbortSignal` that Node.js 20 provides.
-- An ES module project. The package is published as ES modules only. From a CommonJS file, load it with `await import("callrail")`.
+- An ES module project. The package is published as ES modules only. From a CommonJS file, load it with `await import("@yannelli/callrail")`.
 - TypeScript 5.0 or later, if you write TypeScript. The type declarations ship inside the package. The examples read `process.env`, so also install `@types/node`.
 
 ## Install the package
 
-The package is not on the npm registry. Install it from GitHub. npm clones the repository and runs its build during install, so Git must be on your `PATH`.
-
 ```bash
-npm install github:yannelli/callrail-sdk-typescript
+npm install @yannelli/callrail
 ```
-
-To pin a version, add a tag or commit after `#`, for example `github:yannelli/callrail-sdk-typescript#v0.1.0`.
 
 ## Configure TypeScript
 
-The package's three entry points are `callrail`, `callrail/webhooks`, and `callrail/testing`. They are declared in the `exports` field of its `package.json`. TypeScript reads that field only under the `Node16`, `NodeNext`, and `bundler` module resolution modes. Use `NodeNext` for code that Node.js runs directly.
+The package's three entry points are `@yannelli/callrail`, `@yannelli/callrail/webhooks`, and `@yannelli/callrail/testing`. They are declared in the `exports` field of its `package.json`. TypeScript reads that field only under the `Node16`, `NodeNext`, and `bundler` module resolution modes. Use `NodeNext` for code that Node.js runs directly.
 
 ```json
 {
@@ -43,7 +39,7 @@ CallRail API keys belong to a user and see the same data that user sees in the C
 Save this program as `first-request.ts`.
 
 ```ts
-import { CallRail } from "callrail";
+import { CallRail } from "@yannelli/callrail";
 
 const apiKey = process.env.CALLRAIL_API_KEY;
 if (!apiKey) throw new Error("Set CALLRAIL_API_KEY to an API key from your CallRail settings.");

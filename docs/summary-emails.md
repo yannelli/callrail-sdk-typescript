@@ -7,7 +7,7 @@ Only administrators can manage summary emails for other users. A key that belong
 ## List summary emails
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.summaryEmails.list({
@@ -28,7 +28,7 @@ CallRail documents the list route without the `.json` suffix that every other su
 ## Create a summary email
 
 ```ts
-import { CompanyId, UserId } from "callrail";
+import { CompanyId, UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const forBob = await account.summaryEmails.create({
@@ -57,7 +57,7 @@ console.log(forBob.scope, forAccounting.scope);
 ## Get a summary email
 
 ```ts
-import { SummaryEmailId } from "callrail";
+import { SummaryEmailId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const email = await account.summaryEmails.get(SummaryEmailId("CSS8154748ae6bd4e278a7cddd38a662f4f"));
@@ -76,7 +76,7 @@ console.log(email.frequency, email.leadStatus);
 ## Update a summary email
 
 ```ts
-import { SummaryEmailId } from "callrail";
+import { SummaryEmailId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const email = await account.summaryEmails.update(SummaryEmailId("CSS8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -92,7 +92,7 @@ CallRail needs `sections` in each update, so the type needs it too. `frequency` 
 ## Delete a summary email
 
 ```ts
-import { SummaryEmailId } from "callrail";
+import { SummaryEmailId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.summaryEmails.delete(SummaryEmailId("CSS8154748ae6bd4e278a7cddd38a662f4f"));

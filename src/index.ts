@@ -1,7 +1,7 @@
 /**
- * The `callrail` entry exports the client, its error, page types, query
- * vocabulary, ids, and every resource's domain types. Receiving webhooks lives in `callrail/webhooks`
- * and the scripted fetch lives in `callrail/testing`, so neither loads unless
+ * The `@yannelli/callrail` entry exports the client, its error, page types, query
+ * vocabulary, ids, and every resource's domain types. Receiving webhooks lives in `@yannelli/callrail/webhooks`
+ * and the scripted fetch lives in `@yannelli/callrail/testing`, so neither loads unless
  * imported.
  *
  * Nothing here exposes the transport. `Http`, `Endpoint`, decoders, and wire

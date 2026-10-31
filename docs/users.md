@@ -11,7 +11,7 @@ Only administrators can create users, delete users, or change which companies an
 ## List users
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const page = await account.users.list({
@@ -30,7 +30,7 @@ for (const user of page.items) {
 ## Get a user
 
 ```ts
-import { UserId } from "callrail";
+import { UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const user = await account.users.get(UserId("USR8154748ae6bd4e278a7cddd38a662f4f"));
@@ -43,7 +43,7 @@ console.log(user.name, user.role, user.createdAt);
 ## Create a user
 
 ```ts
-import { CompanyId } from "callrail";
+import { CompanyId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const manager = await account.users.create({
@@ -71,7 +71,7 @@ CallRail's create and update response tables type `first_name` as a number, whil
 ## Update a user
 
 ```ts
-import { CompanyId, UserId } from "callrail";
+import { CompanyId, UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 const user = await account.users.update(UserId("USR8154748ae6bd4e278a7cddd38a662f4f"), {
@@ -86,7 +86,7 @@ console.log(user.companies);
 Names and email can change only for the user who owns the API key. CallRail answers a change to anyone else's name or email with an error. A change of email also needs the current password of that user, so the type accepts `email` only together with `currentPassword`.
 
 ```ts
-import type { UserId } from "callrail";
+import type { UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 export async function changeMyEmail(me: UserId, email: string, currentPassword: string) {
@@ -99,7 +99,7 @@ A password itself can only be reset or changed in the CallRail app.
 ## Delete a user
 
 ```ts
-import { UserId } from "callrail";
+import { UserId } from "@yannelli/callrail";
 import { account } from "./callrail.js";
 
 await account.users.delete(UserId("USR8154748ae6bd4e278a7cddd38a662f4f"));

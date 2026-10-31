@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node.js](https://img.shields.io/badge/node-%3E%3D20-339933.svg)](https://nodejs.org/)
 
-`callrail` is a TypeScript SDK for the [CallRail API v3](https://apidocs.callrail.com/). Use it to read and change calls, text messages, form submissions, leads, companies, tracking numbers, and other account resources. It also checks and decodes CallRail webhooks. The package has no runtime dependencies.
+`@yannelli/callrail` is a TypeScript SDK for the [CallRail API v3](https://apidocs.callrail.com/). Use it to read and change calls, text messages, form submissions, leads, companies, tracking numbers, and other account resources. It also checks and decodes CallRail webhooks. The package has no runtime dependencies.
 
 ## Features
 
@@ -14,21 +14,21 @@
 - A failed request throws a `CallRailError`. Its `problem` property is a typed union that you can `switch` on.
 - Lists support automatic pagination. Loop with `for await`, and the client gets each page when you need it.
 - The client retries a `GET` after a network error, a timeout, or a 500, 502, 503, or 504 response. Writes never retry, which prevents duplicate text sends from retries.
-- `callrail/webhooks` checks webhook signatures before it returns a typed event.
-- `callrail/testing` gives your tests a scripted `fetch` that records each request.
+- `@yannelli/callrail/webhooks` checks webhook signatures before it returns a typed event.
+- `@yannelli/callrail/testing` gives your tests a scripted `fetch` that records each request.
 
 ## Install
 
 ```bash
-npm install github:yannelli/callrail-sdk-typescript
+npm install @yannelli/callrail
 ```
 
-The package is not on the npm registry. npm clones the repository and builds it during install. The package needs Node.js 20 or later. It is published as ES modules. [Installation](docs/installation.md) tells you how to configure TypeScript and how to load the package from CommonJS.
+The package needs Node.js 20 or later. It is published as ES modules. [Installation](docs/installation.md) tells you how to configure TypeScript and how to load the package from CommonJS.
 
 ## Quickstart
 
 ```ts
-import { CallRail, CallRailError } from "callrail";
+import { CallRail, CallRailError } from "@yannelli/callrail";
 
 const apiKey = process.env.CALLRAIL_API_KEY;
 if (!apiKey) throw new Error("Set CALLRAIL_API_KEY to an API key from your CallRail settings.");
@@ -101,7 +101,7 @@ It supports Node.js 20 or later, on a server. The package imports `node:http` an
 
 ### Can I use it from CommonJS?
 
-Yes. The package is ES modules only, so load it with `await import("callrail")` in a CommonJS file. [Installation](docs/installation.md#before-you-install) gives the details.
+Yes. The package is ES modules only, so load it with `await import("@yannelli/callrail")` in a CommonJS file. [Installation](docs/installation.md#before-you-install) gives the details.
 
 ### How do I get a CallRail API key?
 
@@ -117,11 +117,11 @@ The client has no rate limiter. When CallRail sends a 429 response, the client t
 
 ### How do I verify a CallRail webhook signature?
 
-Use `readWebhook` from `callrail/webhooks`. It checks the `Signature` header against the raw request body with your company signing key. Then it decodes the body. If the check fails, it throws a `WebhookError`. [Webhooks](docs/webhooks.md#receive-a-webhook) has a full Express example.
+Use `readWebhook` from `@yannelli/callrail/webhooks`. It checks the `Signature` header against the raw request body with your company signing key. Then it decodes the body. If the check fails, it throws a `WebhookError`. [Webhooks](docs/webhooks.md#receive-a-webhook) has a full Express example.
 
 ### How do I test code that uses the client?
 
-Give the client the `fakeFetch` function from `callrail/testing`. It sends the replies that you script, in sequence, and it records each request. Your tests send no requests to CallRail. [Testing](docs/testing.md) has examples.
+Give the client the `fakeFetch` function from `@yannelli/callrail/testing`. It sends the replies that you script, in sequence, and it records each request. Your tests send no requests to CallRail. [Testing](docs/testing.md) has examples.
 
 ## Contributing
 
@@ -135,4 +135,4 @@ Created by [Ryan Yannelli](https://ryanyannelli.com), a Senior Engineer.
 
 ## License
 
-`callrail` is available under the [MIT License](LICENSE). CallRail is a trademark of CallRail, Inc. This project is not affiliated with CallRail, Inc.
+`@yannelli/callrail` is available under the [MIT License](LICENSE). CallRail is a trademark of CallRail, Inc. This project is not affiliated with CallRail, Inc.
