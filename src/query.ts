@@ -114,5 +114,8 @@ export function encodeTagChange(change: TagChange | undefined): JsonBody {
 export function encodeMoney(value: number | null | undefined): string | null | undefined {
   if (value === undefined || value === null) return value;
   if (!Number.isFinite(value)) throw new TypeError(`value must be a finite number of dollars. Got ${value}.`);
-  return value.toFixed(2);
+  // `toFixed` rounds the binary value, so 1.005 gives "1.00". Shift the decimal digits instead.
+  const [mantissa, exponent = "0"] = String(Math.abs(value)).split("e");
+  const cents = Math.round(Number(`${mantissa}e${Number(exponent) + 2}`));
+  return cents === 0 ? "0.00" : ((Math.sign(value) * cents) / 100).toFixed(2);
 }

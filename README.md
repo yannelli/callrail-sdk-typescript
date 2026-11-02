@@ -131,7 +131,7 @@ Bug reports, feature requests, and pull requests are welcome. Read [CONTRIBUTING
 
 ## Author
 
-Created by [Ryan Yannelli](https://ryanyannelli.com), a Senior Engineer.
+Created by [Ryan Yannelli](https://ryanyannelli.com).
 
 ## License
 
