@@ -1,6 +1,6 @@
 {
   "name": "@yannelli/callrail",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "TypeScript SDK for the CallRail API v3. A typed Node.js client with automatic pagination, safe retries, webhook signature checks, and test helpers.",
   "keywords": [
     "callrail",
